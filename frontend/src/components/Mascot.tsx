@@ -15,6 +15,13 @@ export function Mascot({
   size = 'lg',
   className = '',
 }: MascotProps) {
+  const coatLabel: Record<CoatType, string> = {
+    cream: 'creme claro',
+    golden: 'dourado natural',
+    honey: 'mel',
+    caramel: 'caramelo',
+    red: 'ruivo acobreado',
+  }
   const isTalking = state === 'talking'
   const imageName = state === 'studying'
     ? 'doug-real-studying.png'
@@ -27,14 +34,17 @@ export function Mascot({
   return (
     <div
       className={`mascot mascot-${coat} mascot-${state} mascot-${size} accessory-${accessory} ${className}`}
+      data-coat={coat}
+      data-state={state}
       role="img"
-      aria-label={`Golden Retriever ${state === 'studying' ? 'estudando' : 'do Woofy'}`}
+      aria-label={`Golden Retriever de pelagem ${coatLabel[coat]} ${state === 'studying' ? 'estudando' : 'do Woofy'}`}
     >
       {isTalking && <img className="mascot-talk-idle" src={idleImage} alt="" draggable={false} />}
       <img className="mascot-main-frame" src={image} alt="" draggable={false} />
       {(state === 'talking' || state === 'listening') && (
         <span className="mascot-sound-waves" aria-hidden="true"><i /><i /><i /></span>
       )}
+      {state === 'happy' && <span className="mascot-happy-spark" aria-hidden="true"><i />✦</span>}
       {state === 'sleeping' && <span className="mascot-state-symbol mascot-zzz">z z</span>}
       {state === 'celebrating' && (
         <span className="photo-confetti" aria-hidden="true"><i /><i /><i /><i /><i /></span>

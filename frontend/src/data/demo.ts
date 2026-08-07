@@ -56,11 +56,11 @@ export const initialTransactions: PawTransaction[] = [
 ]
 
 export const coatOptions = [
-  { id: 'cream', label: 'Golden Creme', color: '#F4DEB4' },
-  { id: 'golden', label: 'Golden Dourado', color: '#E8B64D' },
-  { id: 'honey', label: 'Golden Mel', color: '#CF8A35' },
-  { id: 'caramel', label: 'Golden Caramelo', color: '#AA642F' },
-  { id: 'red', label: 'Golden Ruivo', color: '#934623' },
+  { id: 'cream', label: 'Creme claro', color: '#EAD9C4' },
+  { id: 'golden', label: 'Dourado natural', color: '#D8AC72' },
+  { id: 'honey', label: 'Mel suave', color: '#C28B53' },
+  { id: 'caramel', label: 'Caramelo', color: '#9A6648' },
+  { id: 'red', label: 'Ruivo acobreado', color: '#7E4C37' },
 ] as const
 
 export const objectives = [

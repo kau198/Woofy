@@ -22,7 +22,7 @@ import { useRef, useState } from 'react'
 import { Mascot } from '../components/Mascot'
 import { useWoofy } from '../contexts/WoofyContext'
 
-type ChatMode = 'livre' | 'planejar' | 'estudar' | 'idiomas'
+type ChatMode = 'livre' | 'explorar' | 'planejar' | 'estudar' | 'idiomas'
 type DetailLevel = 'curto' | 'equilibrado' | 'detalhado'
 
 interface ChatMessage {
@@ -34,13 +34,14 @@ interface ChatMessage {
 
 const modes: Array<{ id: ChatMode; label: string; icon: typeof Sparkles }> = [
   { id: 'livre', label: 'Conversa livre', icon: Sparkles },
+  { id: 'explorar', label: 'Explorar assuntos', icon: Globe2 },
   { id: 'planejar', label: 'Planejar', icon: CalendarDays },
   { id: 'estudar', label: 'Estudar', icon: BookOpen },
   { id: 'idiomas', label: 'Praticar idioma', icon: Languages },
 ]
 
 export function ChatPage() {
-  const { pet, userName, setTasks } = useWoofy()
+  const { pet, userName, interests, setTasks } = useWoofy()
   const [input, setInput] = useState('')
   const [added, setAdded] = useState(false)
   const [mode, setMode] = useState<ChatMode>('livre')
@@ -52,7 +53,7 @@ export function ChatPage() {
   const [attachment, setAttachment] = useState('')
   const fileInput = useRef<HTMLInputElement>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: 1, sender: 'pet', text: `Oi, ${userName}! Este espaço é seu. Podemos conversar livremente, estudar, praticar um idioma ou transformar uma ideia em plano — você escolhe.` },
+    { id: 1, sender: 'pet', text: `Oi, ${userName}! Este espaço é nosso. Lembro que você curte ${interests.slice(0, 3).join(', ')} — mas podemos conversar sobre qualquer assunto.` },
   ])
 
   const buildReply = (text: string) => {
@@ -62,6 +63,18 @@ export function ChatPage() {
     }
     if (normalized.includes('cansad') || normalized.includes('sobrecarreg') || normalized.includes('ansios')) {
       return { text: 'Obrigado por me contar. Não precisamos transformar tudo em produtividade. Podemos só organizar o que está pesando, escolher uma coisa pequena ou até decidir que agora é hora de descansar. O que seria mais útil para você?' }
+    }
+    if (normalized.includes('corinthians') || normalized.includes('futebol') || normalized.includes('jogo de hoje') || normalized.includes('placar')) {
+      return { text: `Bora falar de futebol, ${userName}! Posso conversar sobre times, história, escalações, tática e rivalidades. Para placar, horário e notícias do jogo de hoje, a versão final vai consultar uma fonte ao vivo antes de responder — assim eu não invento informação.` }
+    }
+    if (normalized.includes('game') || normalized.includes('jogo') || normalized.includes('playstation') || normalized.includes('xbox')) {
+      return { text: 'Games também são assunto por aqui! Me diga o nome do jogo e eu posso conversar sobre história, builds, estratégias, personagens ou ajudar a escolher o próximo — sem transformar tudo em tarefa.' }
+    }
+    if (normalized.includes('música') || normalized.includes('musica') || normalized.includes('filme') || normalized.includes('série') || normalized.includes('serie')) {
+      return { text: 'Gostei do assunto! Posso comparar artistas, conversar sobre letras sem reproduzi-las, discutir personagens, teorias e recomendar algo de acordo com o clima que você procura.' }
+    }
+    if (mode === 'explorar' || normalized.includes('notícia') || normalized.includes('noticia') || normalized.includes('hoje')) {
+      return { text: 'Podemos explorar isso juntos. Para fatos que mudam rápido, como notícias, programação e resultados de hoje, eu vou sinalizar quando precisar consultar a internet. Para ideias e explicações, já podemos seguir normalmente.' }
     }
     if (mode === 'estudar' || normalized.includes('prova') || normalized.includes('estudar')) {
       return { text: 'Podemos estudar do jeito que funciona melhor para você: explicação, resumo, perguntas, simulado ou um plano por etapas. Preparei uma sugestão inicial, mas você pode mudar tudo antes de salvar.', suggestion: true }
@@ -116,7 +129,7 @@ export function ChatPage() {
 
       <section className="chat-main">
         <header className="chat-header chat-header-v2">
-          <div className="chat-header-pet"><Mascot coat={pet.coat} size="sm" accessory="none" /></div>
+          <div className="chat-header-pet"><Mascot coat={pet.coat} size="sm" state={typing ? 'talking' : 'listening'} accessory="none" /></div>
           <div><span>Conversando com</span><h1>{pet.name}</h1><small><i /> Online e sem julgamentos</small></div>
           <div className="chat-header-tools">
             <label className="mode-select"><span>{modes.find((item) => item.id === mode)?.label}</span><ChevronDown /><select value={mode} onChange={(event) => setMode(event.target.value as ChatMode)}>{modes.map((item) => <option value={item.id} key={item.id}>{item.label}</option>)}</select></label>
@@ -130,7 +143,8 @@ export function ChatPage() {
               <div className="chat-welcome-pet"><Mascot coat={pet.coat} size="lg" state="happy" /></div>
               <span>ESPAÇO LIVRE</span>
               <h2>Converse sobre o que quiser.</h2>
-              <p>Não precisa escolher uma função. Escreva naturalmente e {pet.name} acompanha você.</p>
+              <p>Não precisa escolher uma função. Comece por um interesse ou escreva naturalmente e {pet.name} acompanha você.</p>
+              <div className="interest-shortcuts">{interests.slice(0, 6).map((interest) => <button type="button" key={interest} onClick={() => send(`Quero conversar sobre ${interest}`)}><Sparkles /> {interest}</button>)}</div>
             </div>
           )}
           <div className="chat-day-divider"><span>Hoje</span></div>
@@ -169,7 +183,7 @@ export function ChatPage() {
               <button className="composer-send" onClick={() => send()} disabled={!input.trim() || typing} aria-label="Enviar mensagem"><ArrowUp /></button>
             </div>
           </div>
-          <p><Clock3 /> Você pode falar sobre qualquer assunto. Confirme informações importantes.</p>
+          <p><Clock3 /> A demonstração conversa por temas; notícias e placares ao vivo serão ativados com o backend de IA.</p>
         </div>
       </section>
 
@@ -177,6 +191,7 @@ export function ChatPage() {
         <div className="preferences-heading"><div><span>PREFERÊNCIAS</span><h2>Sua conversa, seu jeito</h2></div><button onClick={() => setPreferencesOpen(false)}><X /></button></div>
         <div className="preference-section"><strong>Tipo de conversa</strong><div className="preference-mode-grid">{modes.map(({ id, label, icon: Icon }) => <button className={mode === id ? 'active' : ''} key={id} onClick={() => setMode(id)}><Icon /><span>{label}</span>{mode === id && <Check />}</button>)}</div></div>
         <div className="preference-section"><strong>Detalhamento das respostas</strong><div className="detail-control">{(['curto', 'equilibrado', 'detalhado'] as DetailLevel[]).map((item) => <button className={detail === item ? 'active' : ''} key={item} onClick={() => setDetail(item)}>{item}</button>)}</div></div>
+        <div className="preference-section"><strong>Assuntos que você curte</strong><div className="preference-interests">{interests.map((interest) => <span key={interest}><Sparkles /> {interest}</span>)}</div></div>
         <div className="preference-section"><strong>Contexto permitido</strong><label className="preference-toggle"><span><CalendarDays /><span><b>Usar minha rotina</b><small>Tarefas, hábitos e horários ajudam a personalizar respostas.</small></span></span><button className={`toggle ${useRoutine ? 'on' : ''}`} onClick={() => setUseRoutine((value) => !value)}><i /></button></label><label className="preference-toggle"><span><Globe2 /><span><b>Alternar idiomas livremente</b><small>{pet.name} acompanha o idioma da sua mensagem.</small></span></span><button className="toggle on"><i /></button></label></div>
         <div className="freedom-note"><Sparkles /><p><strong>Você não está preso a um modo.</strong> As opções só ajudam a calibrar a resposta. Escreva o que quiser a qualquer momento.</p></div>
       </aside>

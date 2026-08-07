@@ -8,20 +8,29 @@ export function DashboardPage() {
   const { userName, pet, tasks, toggleTask, habits, toggleHabit, paws } = useWoofy()
   const pending = tasks.filter((task) => !task.completed)
   const completeCount = tasks.filter((task) => task.completed).length
+  const level = Math.floor(paws / 100) + 1
+  const levelProgress = paws % 100
 
   return (
     <div className="dashboard-page page-enter">
       <section className="dashboard-welcome">
         <div className="welcome-copy">
-          <span className="day-label"><CalendarDays size={15} /> Quinta-feira, 6 de agosto</span>
-          <h1>Bom dia, {userName}! <span>☀</span></h1>
-          <p>Hoje temos {pending.length} tarefas. Que tal começarmos pela mais simples?</p>
+          <span className="day-label"><CalendarDays size={15} /> MISSÃO DIÁRIA · QUINTA-FEIRA</span>
+          <h1>Vamos subir de nível, {userName}? <span>✦</span></h1>
+          <p>Faltam {pending.length} missões para fechar o dia. Comece pela menor e ganhe ritmo.</p>
           <div className="welcome-actions"><Link className="button button-primary" to="/app/tarefas"><Plus /> Nova tarefa</Link><Link className="button button-soft" to="/app/foco"><Play fill="currentColor" /> Iniciar foco</Link></div>
         </div>
         <div className="welcome-pet">
           <div className="pet-bubble"><Sparkles size={15} /><p>Estou com você!<br /><strong>Uma coisa de cada vez.</strong></p></div>
-          <Mascot coat={pet.coat} size="lg" state="happy" />
+          <Mascot coat={pet.coat} size="lg" state="talking" />
         </div>
+      </section>
+
+      <section className="dashboard-game-strip">
+        <article className="level-card"><span>NÍVEL {level}</span><div><strong>Explorador de rotinas</strong><small>{100 - levelProgress} XP para o próximo nível</small><i><b style={{ width: `${levelProgress}%` }} /></i></div><Trophy /></article>
+        <article><Flame fill="currentColor" /><span><strong>3 dias</strong><small>sequência gentil</small></span></article>
+        <article><Sparkles fill="currentColor" /><span><strong>2 bônus</strong><small>prontos para coletar</small></span></article>
+        <Link to="/app/conversar"><Mascot coat={pet.coat} size="sm" state="listening" accessory="none" /><span><strong>{pet.name} está online</strong><small>Fale sobre o que quiser</small></span><ArrowRight /></Link>
       </section>
 
       <section className="dashboard-stats">

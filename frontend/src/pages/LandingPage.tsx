@@ -1,203 +1,141 @@
 import {
   ArrowRight,
-  BrainCircuit,
-  CalendarDays,
+  BadgeCheck,
   Check,
-  CheckCircle2,
-  Clock3,
-  Heart,
+  Flame,
+  Gamepad2,
+  Gift,
   MessageCircle,
+  Music2,
+  Newspaper,
   PawPrint,
-  ShieldCheck,
   Sparkles,
-  Target,
+  Trophy,
+  Tv,
+  Zap,
 } from 'lucide-react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { BrandMark } from '../components/BrandMark'
 import { Mascot } from '../components/Mascot'
-import { PublicFooter } from '../components/PublicFooter'
-import { PublicHeader } from '../components/PublicHeader'
 
-const features = [
-  {
-    icon: CheckCircle2,
-    title: 'Tarefas sem peso',
-    text: 'Organize o que importa, divida grandes planos em pequenos passos e siga no seu ritmo.',
-    color: 'mint',
-  },
-  {
-    icon: Target,
-    title: 'Hábitos possíveis',
-    text: 'Crie rotinas que cabem na vida real, sem punições por um dia fora do plano.',
-    color: 'peach',
-  },
-  {
-    icon: Clock3,
-    title: 'Foco acompanhado',
-    text: 'Escolha seu tempo, respire e deixe seu companheiro ficar ao seu lado.',
-    color: 'lavender',
-  },
-  {
-    icon: MessageCircle,
-    title: 'Ajuda que conversa',
-    text: 'Transforme preocupações em planos claros com uma IA acolhedora e prática.',
-    color: 'sky',
-  },
+const topicOptions = [
+  { label: 'Futebol', icon: Trophy, prompt: 'Bora falar de futebol? Posso acompanhar seu time, discutir o jogo e lembrar dos próximos confrontos.' },
+  { label: 'Games', icon: Gamepad2, prompt: 'Qual jogo está ocupando sua cabeça agora? Vale estratégia, história, build ou só reclamar daquele boss.' },
+  { label: 'Música', icon: Music2, prompt: 'Me conta o que está tocando no repeat. Posso descobrir seu estilo e montar momentos da rotina com música.' },
+  { label: 'Filmes e séries', icon: Tv, prompt: 'Sem spoiler ou com spoiler? Posso conversar sobre teorias, personagens e o que assistir depois.' },
+  { label: 'Atualidades', icon: Newspaper, prompt: 'Podemos conversar sobre o que está acontecendo. Informações de hoje serão verificadas quando a IA estiver conectada.' },
+]
+
+const quests = [
+  { title: 'Organize a primeira missão', detail: 'Escolha uma tarefa pequena para hoje', reward: 10 },
+  { title: 'Conte algo que você curte', detail: 'Doug aprende um novo interesse seu', reward: 15 },
+  { title: 'Faça um foco de 10 minutos', detail: 'Uma aventura curta já vale', reward: 20 },
 ]
 
 export function LandingPage() {
+  const [activeTopic, setActiveTopic] = useState(0)
+  const [completedQuests, setCompletedQuests] = useState<number[]>([0])
+
+  const toggleQuest = (index: number) => {
+    setCompletedQuests((current) => current.includes(index)
+      ? current.filter((item) => item !== index)
+      : [...current, index])
+  }
+
+  const earnedPaws = completedQuests.reduce((total, index) => total + quests[index].reward, 0)
+  const ActiveTopicIcon = topicOptions[activeTopic].icon
+
   return (
-    <div className="public-page">
-      <PublicHeader />
+    <div className="game-landing">
+      <header className="game-topbar">
+        <BrandMark />
+        <div className="game-topbar-status">
+          <span className="season-chip"><Sparkles /> Temporada de boas rotinas</span>
+          <Link className="game-login-link" to="/entrar">Já tenho uma conta</Link>
+          <Link className="button button-primary" to="/criar-conta">Começar agora <ArrowRight /></Link>
+        </div>
+      </header>
+
       <main>
-        <section className="hero-section">
-          <div className="hero-glow hero-glow-one" />
-          <div className="hero-glow hero-glow-two" />
-          <div className="hero-copy">
-            <div className="eyebrow"><Sparkles size={15} /> Mais leveza para a sua rotina</div>
-            <h1>Organize sua vida com um <em>amigo</em> ao seu lado.</h1>
-            <p className="hero-subtitle">
-              Tarefas, hábitos e foco com a companhia de um Golden Retriever virtual que incentiva você — sem cobranças e sem julgamentos.
-            </p>
-            <div className="hero-actions">
-              <Link className="button button-primary button-lg" to="/criar-conta">
-                Adotar meu companheiro <ArrowRight size={19} />
-              </Link>
-              <Link className="button button-ghost button-lg" to="/como-funciona">Ver como funciona</Link>
+        <section className="game-hero">
+          <div className="game-hero-copy">
+            <span className="game-kicker"><Zap fill="currentColor" /> SEU DIA, SUA AVENTURA</span>
+            <h1>Produtividade fica melhor com um <em>parceiro de verdade.</em></h1>
+            <p>Adote um Golden Retriever, complete missões do seu jeito, ganhe patinhas e converse sobre tudo o que faz parte da sua vida.</p>
+            <div className="game-hero-actions">
+              <Link className="button button-primary button-lg" to="/criar-conta">Adotar meu Golden <PawPrint fill="currentColor" /></Link>
+              <Link className="button button-ghost button-lg" to="/app">Jogar a demonstração</Link>
             </div>
-            <div className="hero-proof">
-              <span className="proof-avatars"><i>K</i><i>M</i><i>R</i></span>
-              <span><strong>Feito para dias reais.</strong><br />Inclusive os mais bagunçados.</span>
+            <div className="game-social-proof">
+              <span><BadgeCheck /> Sem punição por falhar um dia</span>
+              <span><MessageCircle /> Conversas sobre qualquer assunto</span>
             </div>
           </div>
-          <div className="hero-visual">
-            <div className="hero-orbit orbit-one"><Heart size={18} fill="currentColor" /></div>
-            <div className="hero-orbit orbit-two"><Check size={20} /></div>
-            <div className="hero-orbit orbit-three"><PawPrint size={18} fill="currentColor" /></div>
-            <div className="hero-mascot-stage">
-              <span className="hero-sun" />
-              <span className="hero-ground" />
-              <Mascot size="xl" state="happy" />
-              <div className="hero-message-card">
-                <span className="mini-avatar"><PawPrint size={14} fill="currentColor" /></span>
-                <p><strong>Oi! Eu sou o Doug.</strong><br />Vamos fazer uma coisinha de cada vez?</p>
-              </div>
+
+          <div className="companion-arena">
+            <div className="arena-grid" />
+            <span className="arena-level">NÍVEL 3</span>
+            <div className="arena-speech">
+              <i /><i /><i />
+              <p><strong>Oi, eu sou o Doug!</strong> Qual vai ser nossa primeira missão?</p>
             </div>
-            <div className="hero-task-card">
-              <span className="task-check"><Check size={14} /></span>
-              <span><strong>Primeira tarefa do dia</strong><small>Comece pela mais simples</small></span>
-              <span className="paws-pill"><PawPrint size={12} fill="currentColor" /> +10</span>
+            <Mascot size="xl" state="talking" className="hero-real-doug" />
+            <div className="floating-loot loot-paws"><PawPrint fill="currentColor" /><strong>+{earnedPaws}</strong><span>patinhas</span></div>
+            <div className="floating-loot loot-streak"><Flame fill="currentColor" /><strong>3 dias</strong><span>no seu ritmo</span></div>
+            <div className="arena-xp">
+              <span><strong>Doug</strong><small>Companheiro curioso</small></span>
+              <div><i style={{ width: '68%' }} /></div>
+              <b>680 / 1000 XP</b>
             </div>
           </div>
         </section>
 
-        <section className="values-strip" aria-label="Princípios do Woofy">
-          <span><ShieldCheck size={20} /> Sem julgamentos</span>
-          <span><Heart size={20} /> Feito com acolhimento</span>
-          <span><BrainCircuit size={20} /> IA que entende contexto</span>
-          <span><CalendarDays size={20} /> Uma rotina do seu jeito</span>
-        </section>
-
-        <section className="section features-section" id="recursos">
-          <div className="section-heading centered">
-            <span className="section-kicker">Tudo em um só lugar</span>
-            <h2>Organização que se adapta à sua vida.</h2>
-            <p>O Woofy reúne as ferramentas que você precisa e deixa de fora a pressão que você não precisa.</p>
+        <section className="quest-board">
+          <div className="quest-board-heading">
+            <div><span className="game-kicker"><Trophy /> MISSÕES DE HOJE</span><h2>Pequenos passos rendem grandes recompensas.</h2></div>
+            <div className="quest-total"><PawPrint fill="currentColor" /><span><strong>{earnedPaws}</strong> de 45 patinhas</span></div>
           </div>
-          <div className="feature-grid">
-            {features.map(({ icon: Icon, title, text, color }) => (
-              <article key={title} className={`feature-card feature-${color}`}>
-                <span className="feature-icon"><Icon size={23} /></span>
-                <h3>{title}</h3>
-                <p>{text}</p>
-                <Link to="/criar-conta">Conhecer recurso <ArrowRight size={15} /></Link>
-              </article>
-            ))}
+          <div className="quest-grid">
+            {quests.map((quest, index) => {
+              const completed = completedQuests.includes(index)
+              return (
+                <button type="button" className={`quest-card ${completed ? 'is-complete' : ''}`} key={quest.title} onClick={() => toggleQuest(index)}>
+                  <span className="quest-check">{completed ? <Check /> : index + 1}</span>
+                  <span><strong>{quest.title}</strong><small>{quest.detail}</small></span>
+                  <b><PawPrint fill="currentColor" /> +{quest.reward}</b>
+                </button>
+              )
+            })}
           </div>
         </section>
 
-        <section className="companion-section">
-          <div className="companion-visual">
-            <div className="companion-arch">
-              <div className="companion-stars">✦ <span>✦</span></div>
-              <Mascot size="xl" state="normal" accessory="bow" />
-              <span className="pet-name-tag">Doug <Heart size={13} fill="currentColor" /></span>
+        <section className="interest-playground">
+          <div className="interest-copy">
+            <span className="game-kicker"><MessageCircle /> CONVERSA QUE TEM A SUA CARA</span>
+            <h2>Doug não fala só de tarefas.</h2>
+            <p>Escolha seus interesses na adoção. Seu companheiro usa esses assuntos para puxar papo, explicar coisas e deixar cada conversa mais pessoal.</p>
+            <div className="topic-selector">
+              {topicOptions.map(({ label, icon: Icon }, index) => (
+                <button type="button" className={activeTopic === index ? 'active' : ''} key={label} onClick={() => setActiveTopic(index)}><Icon /> {label}</button>
+              ))}
             </div>
+            <small className="live-info-note"><Newspaper /> Placares e notícias do momento serão consultados quando o backend com IA estiver conectado.</small>
           </div>
-          <div className="companion-copy">
-            <span className="section-kicker">Um companheiro só seu</span>
-            <h2>Mais do que um mascote. Uma presença na sua rotina.</h2>
-            <p>Você escolhe a pelagem, o nome e a personalidade. O Woofy aprende como ajudar e comemora cada pequena conquista com você.</p>
-            <ul className="check-list">
-              <li><CheckCircle2 /> Personalize seu Golden Retriever</li>
-              <li><CheckCircle2 /> Escolha um jeito de conversar que combina com você</li>
-              <li><CheckCircle2 /> Ganhe patinhas e desbloqueie acessórios</li>
-              <li><CheckCircle2 /> Volte quando quiser — ele sempre ficará feliz em ver você</li>
-            </ul>
-            <Link className="text-link" to="/como-funciona">Conheça a jornada de adoção <ArrowRight size={17} /></Link>
+          <div className="topic-chat-card">
+            <div className="topic-chat-header"><Mascot size="sm" state="listening" accessory="none" /><span><strong>Doug</strong><small>aprendendo seus interesses</small></span><i /></div>
+            <div className="topic-user-message"><ActiveTopicIcon /> Quero conversar sobre {topicOptions[activeTopic].label.toLowerCase()}.</div>
+            <div className="topic-doug-message"><Mascot size="sm" state="talking" accessory="none" /><p>{topicOptions[activeTopic].prompt}</p></div>
+            <div className="topic-reward"><Gift /> Novo interesse descoberto <strong>+15 patinhas</strong></div>
           </div>
         </section>
 
-        <section className="ai-section" id="ia">
-          <div className="ai-copy">
-            <div className="eyebrow eyebrow-light"><BrainCircuit size={16} /> Inteligência artificial acolhedora</div>
-            <h2>Quando tudo parece muito, o Woofy ajuda a encontrar o primeiro passo.</h2>
-            <p>Converse naturalmente. Seu companheiro pode organizar a semana, dividir uma tarefa, montar um plano de estudos ou apenas ajudar você a clarear as ideias.</p>
-            <div className="ai-guardrail"><ShieldCheck /><span><strong>Você sempre decide.</strong> Nenhuma tarefa é criada ou alterada sem sua confirmação.</span></div>
-          </div>
-          <div className="chat-preview">
-            <div className="chat-preview-header">
-              <span className="chat-dog-avatar"><PawPrint fill="currentColor" /></span>
-              <span><strong>Conversar com Doug</strong><small>Seu companheiro está aqui</small></span>
-              <i />
-            </div>
-            <div className="chat-preview-body">
-              <div className="message message-user">Tenho uma prova na segunda e ainda não comecei.</div>
-              <div className="message message-pet">
-                <span className="message-avatar"><PawPrint size={15} fill="currentColor" /></span>
-                <p>Tudo bem, ainda podemos organizar isso. Que tal dividir em três passos pequenos para hoje?</p>
-              </div>
-              <div className="suggestion-card">
-                <span><CheckSquare2Icon /> Revisar os conceitos principais</span>
-                <span><CheckSquare2Icon /> Praticar com 5 exercícios</span>
-                <button type="button">Adicionar estas tarefas</button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="section journey-section">
-          <div className="section-heading centered">
-            <span className="section-kicker">Começar é simples</span>
-            <h2>Seu novo companheiro está a três passos.</h2>
-          </div>
-          <div className="journey-steps">
-            <article><span>01</span><div className="journey-icon"><UserRoundIcon /></div><h3>Crie sua conta</h3><p>Conte só o necessário para começar.</p></article>
-            <article><span>02</span><div className="journey-icon"><PawPrint /></div><h3>Adote seu pet</h3><p>Escolha pelagem, nome e personalidade.</p></article>
-            <article><span>03</span><div className="journey-icon"><Sparkles /></div><h3>Comecem juntos</h3><p>Organize o primeiro dia no seu ritmo.</p></article>
-          </div>
-        </section>
-
-        <section className="cta-section">
-          <div className="cta-paw cta-paw-one">🐾</div>
-          <div className="cta-paw cta-paw-two">🐾</div>
-          <div className="cta-mascot"><Mascot size="md" state="celebrating" /></div>
-          <div>
-            <span>Seu companheiro está esperando.</span>
-            <h2>Que tal dar o primeiro passo juntos?</h2>
-            <p>Crie sua conta gratuitamente e comece uma rotina mais leve hoje.</p>
-          </div>
-          <Link className="button button-light button-lg" to="/criar-conta">Adotar meu companheiro <ArrowRight size={19} /></Link>
+        <section className="game-cta">
+          <div className="game-cta-dog"><Mascot size="lg" state="celebrating" /></div>
+          <div><span>PRONTO PARA O PRIMEIRO NÍVEL?</span><h2>Adote, personalize e comece a jogar sua rotina.</h2><p>Sem rankings impossíveis. O progresso é seu e o Doug comemora cada passo.</p></div>
+          <Link className="button button-light button-lg" to="/criar-conta">Conhecer meu companheiro <ArrowRight /></Link>
         </section>
       </main>
-      <PublicFooter />
     </div>
   )
-}
-
-function CheckSquare2Icon() {
-  return <span className="tiny-check"><Check size={11} /></span>
-}
-
-function UserRoundIcon() {
-  return <span aria-hidden="true">☺</span>
 }

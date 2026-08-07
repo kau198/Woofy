@@ -6,6 +6,8 @@ import type { Habit, PawTransaction, Pet, Task } from '../types'
 interface WoofyContextValue {
   userName: string
   setUserName: (name: string) => void
+  interests: string[]
+  setInterests: (interests: string[]) => void
   pet: Pet
   setPet: (pet: Pet) => void
   tasks: Task[]
@@ -33,6 +35,14 @@ const WoofyContext = createContext<WoofyContextValue | null>(null)
 
 export function WoofyProvider({ children }: { children: ReactNode }) {
   const [userName, setUserName] = useState('Kauã')
+  const [interests, setInterests] = useState<string[]>(() => {
+    try {
+      const stored = window.localStorage.getItem('woofy_interests')
+      return stored ? JSON.parse(stored) as string[] : ['Futebol', 'Games', 'Tecnologia']
+    } catch {
+      return ['Futebol', 'Games', 'Tecnologia']
+    }
+  })
   const [pet, setPet] = useState(defaultPet)
   const [tasks, setTasks] = useState(initialTasks)
   const [habits, setHabits] = useState(initialHabits)
@@ -43,6 +53,10 @@ export function WoofyProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode)
   }, [darkMode])
+
+  useEffect(() => {
+    window.localStorage.setItem('woofy_interests', JSON.stringify(interests))
+  }, [interests])
 
   const addPaws = useCallback((amount: number, description: string) => {
     setPaws((current) => current + amount)
@@ -76,6 +90,8 @@ export function WoofyProvider({ children }: { children: ReactNode }) {
     () => ({
       userName,
       setUserName,
+      interests,
+      setInterests,
       pet,
       setPet,
       tasks,
@@ -89,7 +105,7 @@ export function WoofyProvider({ children }: { children: ReactNode }) {
       darkMode,
       setDarkMode,
     }),
-    [userName, pet, tasks, toggleTask, habits, toggleHabit, paws, transactions, addPaws, darkMode],
+    [userName, interests, pet, tasks, toggleTask, habits, toggleHabit, paws, transactions, addPaws, darkMode],
   )
 
   return <WoofyContext.Provider value={value}>{children}</WoofyContext.Provider>

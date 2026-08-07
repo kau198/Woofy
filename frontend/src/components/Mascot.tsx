@@ -2,7 +2,7 @@ import type { CoatType } from '../types'
 
 interface MascotProps {
   coat?: CoatType
-  state?: 'normal' | 'happy' | 'studying' | 'sleeping' | 'celebrating'
+  state?: 'idle' | 'normal' | 'happy' | 'talking' | 'listening' | 'studying' | 'sleeping' | 'celebrating'
   accessory?: 'bandana' | 'bow' | 'none'
   size?: 'sm' | 'md' | 'lg' | 'xl'
   className?: string
@@ -15,8 +15,14 @@ export function Mascot({
   size = 'lg',
   className = '',
 }: MascotProps) {
-  const imageName = state === 'studying' ? 'doug-studying.png' : 'doug-happy.png'
+  const isTalking = state === 'talking'
+  const imageName = state === 'studying'
+    ? 'doug-real-studying.png'
+    : state === 'talking' || state === 'listening' || state === 'celebrating'
+      ? 'doug-real-talking.png'
+      : 'doug-real-idle.png'
   const image = `${import.meta.env.BASE_URL}mascots/${imageName}`
+  const idleImage = `${import.meta.env.BASE_URL}mascots/doug-real-idle.png`
 
   return (
     <div
@@ -24,7 +30,11 @@ export function Mascot({
       role="img"
       aria-label={`Golden Retriever ${state === 'studying' ? 'estudando' : 'do Woofy'}`}
     >
-      <img src={image} alt="" draggable={false} />
+      {isTalking && <img className="mascot-talk-idle" src={idleImage} alt="" draggable={false} />}
+      <img className="mascot-main-frame" src={image} alt="" draggable={false} />
+      {(state === 'talking' || state === 'listening') && (
+        <span className="mascot-sound-waves" aria-hidden="true"><i /><i /><i /></span>
+      )}
       {state === 'sleeping' && <span className="mascot-state-symbol mascot-zzz">z z</span>}
       {state === 'celebrating' && (
         <span className="photo-confetti" aria-hidden="true"><i /><i /><i /><i /><i /></span>

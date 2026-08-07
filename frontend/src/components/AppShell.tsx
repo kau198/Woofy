@@ -51,7 +51,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           ))}
         </nav>
         <div className="sidebar-pet-card">
-          <div className="sidebar-pet-visual"><Mascot coat={pet.coat} size="sm" state="listening" accessory="none" /></div>
+          <div className="sidebar-pet-visual"><Mascot coat={pet.coat} gender={pet.gender} personality={pet.personality} size="sm" state="listening" accessory="none" /></div>
           <div>
             <span>Nível {Math.floor(paws / 100) + 1} · Seu companheiro</span>
             <strong>{pet.name}</strong>

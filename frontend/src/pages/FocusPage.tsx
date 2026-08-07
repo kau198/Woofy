@@ -39,7 +39,7 @@ export function FocusPage() {
       <div className="focus-topbar"><div><span className="page-kicker">MODO FOCO</span><h1>Um momento só para isso.</h1><p>{pet.name} fica aqui com você. Sem pressa, sem distrações.</p></div><button className="sound-button" onClick={() => setSound((value) => !value)}>{sound ? <Volume2 /> : <VolumeX />} Sons {sound ? 'ligados' : 'desligados'}</button></div>
       <section className="focus-room">
         <div className="focus-room-decor focus-plant">☘</div><div className="focus-room-decor focus-window">☀</div>
-        <div className="focus-companion"><Mascot coat={pet.coat} size="xl" state={running ? 'studying' : done ? 'celebrating' : 'normal'} /><div className="focus-speech">{done ? 'Conseguimos! Você merece uma pausa.' : running ? 'Estou aqui. Só mais um passo.' : 'Pronto quando você estiver.'}</div></div>
+        <div className="focus-companion"><Mascot coat={pet.coat} gender={pet.gender} personality={pet.personality} size="xl" state={running ? 'studying' : done ? 'celebrating' : 'normal'} /><div className="focus-speech">{done ? 'Conseguimos! Você merece uma pausa.' : running ? 'Estou aqui. Só mais um passo.' : 'Pronto quando você estiver.'}</div></div>
         <div className="timer-panel">
           <div className="timer-task"><span>FOCANDO EM</span><button>Revisar banco de dados <ChevronDown /></button></div>
           <div className="timer-ring" style={{ '--timer-progress': `${progress * 360}deg` } as React.CSSProperties}><div><strong>{displayMinutes}</strong><i>:</i><strong>{displaySeconds}</strong><span>{running ? 'EM FOCO' : done ? 'CONCLUÍDO' : 'PRONTO'}</span></div></div>

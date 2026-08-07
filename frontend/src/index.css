@@ -721,3 +721,30 @@ body,.app-shell,.chat-page-v2 { background:#f8f3ed; color:var(--ink); }
 @media (prefers-reduced-motion:reduce){
   .mascot-happy-spark{animation:none!important}
 }
+
+/* Gender cues and personality-specific companion poses */
+.gender-marker { position:absolute; z-index:12; right:5%; bottom:5%; width:23%; height:17%; pointer-events:none; filter:drop-shadow(0 3px 3px rgba(52,38,30,.2)); }
+.gender-bow:before,.gender-bow:after { content:""; position:absolute; top:15%; width:45%; height:70%; background:#bd806f; border:2px solid #8e5d50; }
+.gender-bow:before { left:2%; border-radius:55% 18% 55% 22%; transform:rotate(9deg); }
+.gender-bow:after { right:2%; border-radius:18% 55% 22% 55%; transform:rotate(-9deg); }
+.gender-bow i { position:absolute; z-index:2; left:39%; top:28%; width:22%; height:45%; border:2px solid #7e5146; border-radius:50%; background:#d7a08f; }
+.gender-bandana { right:5%; bottom:4%; width:25%; height:22%; border-top:5px solid #302925; border-radius:7px 7px 45% 45%; background:#5d4335; clip-path:polygon(5% 0,95% 0,76% 100%,50% 72%,24% 100%); }
+.gender-bandana i { position:absolute; left:17%; right:17%; top:24%; height:2px; border-radius:99px; background:rgba(255,255,255,.3); }
+.mascot-sm .gender-marker { width:28%; height:21%; right:2%; bottom:2%; }
+.mascot-sm .gender-bow:before,.mascot-sm .gender-bow:after,.mascot-sm .gender-bow i { border-width:1px; }
+.mascot-sm .gender-bandana { width:29%; height:24%; border-top-width:3px; }
+
+.mascot-personality-carinhoso.mascot-happy,.mascot-personality-carinhoso.mascot-normal { animation:affectionateCompanion 3.2s ease-in-out infinite; }
+.mascot-personality-calmo.mascot-happy,.mascot-personality-calmo.mascot-normal,.mascot-personality-calmo.mascot-listening { animation:calmCompanion 5.2s ease-in-out infinite; }
+.mascot-personality-divertido.mascot-happy,.mascot-personality-divertido.mascot-normal,.mascot-personality-divertido.mascot-listening { animation:playfulCompanion 2.1s ease-in-out infinite; }
+.mascot-personality-animado.mascot-happy,.mascot-personality-animado.mascot-normal,.mascot-personality-animado.mascot-listening { animation:energeticCompanion 1.35s ease-in-out infinite; }
+.mascot-personality-animado.mascot-talking { animation:energeticTalk .44s ease-in-out infinite; }
+@keyframes affectionateCompanion{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(-1deg) scale(1.006)}}
+@keyframes calmCompanion{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(2px) scale(.992)}}
+@keyframes playfulCompanion{0%,100%{transform:translateY(0) rotate(-.7deg)}50%{transform:translateY(-6px) rotate(1.2deg)}}
+@keyframes energeticCompanion{0%,100%{transform:translateY(0) rotate(-.8deg)}50%{transform:translateY(-8px) rotate(1.2deg) scale(1.012)}}
+@keyframes energeticTalk{0%,100%{transform:translateY(0) rotate(-.5deg)}50%{transform:translateY(-7px) rotate(1deg)}}
+
+@media (prefers-reduced-motion:reduce){
+  .mascot-personality-carinhoso,.mascot-personality-calmo,.mascot-personality-divertido,.mascot-personality-animado{animation:none!important}
+}

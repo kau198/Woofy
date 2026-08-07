@@ -22,7 +22,7 @@ export function DashboardPage() {
         </div>
         <div className="welcome-pet">
           <div className="pet-bubble"><Sparkles size={15} /><p>Estou com você!<br /><strong>Uma coisa de cada vez.</strong></p></div>
-          <Mascot coat={pet.coat} size="lg" state="talking" />
+          <Mascot coat={pet.coat} gender={pet.gender} personality={pet.personality} size="lg" state="talking" />
         </div>
       </section>
 
@@ -30,7 +30,7 @@ export function DashboardPage() {
         <article className="level-card"><span>NÍVEL {level}</span><div><strong>Explorador de rotinas</strong><small>{100 - levelProgress} XP para o próximo nível</small><i><b style={{ width: `${levelProgress}%` }} /></i></div><Trophy /></article>
         <article><Flame fill="currentColor" /><span><strong>3 dias</strong><small>sequência gentil</small></span></article>
         <article><Sparkles fill="currentColor" /><span><strong>2 bônus</strong><small>prontos para coletar</small></span></article>
-        <Link to="/app/conversar"><Mascot coat={pet.coat} size="sm" state="listening" accessory="none" /><span><strong>{pet.name} está online</strong><small>Fale sobre o que quiser</small></span><ArrowRight /></Link>
+        <Link to="/app/conversar"><Mascot coat={pet.coat} gender={pet.gender} personality={pet.personality} size="sm" state="listening" accessory="none" /><span><strong>{pet.name} está online</strong><small>Fale sobre o que quiser</small></span><ArrowRight /></Link>
       </section>
 
       <section className="dashboard-stats">
@@ -59,7 +59,7 @@ export function DashboardPage() {
         </section>
 
         <section className="dashboard-card focus-card">
-          <div className="focus-visual"><Mascot coat={pet.coat} size="md" state="studying" accessory="none" /></div>
+          <div className="focus-visual"><Mascot coat={pet.coat} gender={pet.gender} personality={pet.personality} size="md" state="studying" accessory="none" /></div>
           <div><span className="section-kicker">MOMENTO DE CONCENTRAR</span><h2>Vamos focar juntos?</h2><p>Escolha um tempo, silencie as distrações e deixe {pet.name} fazer companhia.</p><Link className="button button-dark" to="/app/foco"><Play fill="currentColor" /> Iniciar sessão de 25 min</Link></div>
         </section>
 

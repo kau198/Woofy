@@ -143,13 +143,13 @@ export function OnboardingPage() {
               <button type="button" className={gender === 'male' ? 'selected' : ''} onClick={() => setGender('male')}><span>♂</span><strong>Macho</strong><small>Ele / dele</small>{gender === 'male' && <Check />}</button>
               <button type="button" className={gender === 'female' ? 'selected' : ''} onClick={() => setGender('female')}><span>♀</span><strong>Fêmea</strong><small>Ela / dela</small>{gender === 'female' && <Check />}</button>
             </div>
-            <div className="choice-pet-preview"><Mascot coat={coat} size="lg" state="normal" /></div>
+            <div className="choice-pet-preview"><Mascot coat={coat} gender={gender} personality={personality} size="lg" state="normal" /></div>
           </div>
         )}
 
         {step === 4 && (
           <div className="name-step step-animate">
-            <div className="name-pet"><Mascot coat={coat} size="xl" state="talking" /></div>
+            <div className="name-pet"><Mascot coat={coat} gender={gender} personality={personality} size="xl" state="talking" /></div>
             <div className="name-copy">
               <span className="onboarding-kicker">AGORA, O NOME</span>
               <h1>Como seu companheiro vai se chamar?</h1>
@@ -166,7 +166,7 @@ export function OnboardingPage() {
             <div className="personality-options">
               {personalityOptions.map((option) => <button type="button" key={option.id} className={personality === option.id ? 'selected' : ''} onClick={() => setPersonality(option.id)}><span>{option.emoji}</span><strong>{option.title}</strong><small>{option.text}</small>{personality === option.id && <Check />}</button>)}
             </div>
-            <div className="personality-message"><Mascot coat={coat} size="sm" state="talking" accessory="none" /><p>{personality === 'calmo' ? `Sem pressa, ${userName}. Podemos escolher só uma coisa importante para agora.` : personality === 'divertido' ? `Plano do dia: uma tarefa, uma pausa e talvez um petisco imaginário!` : personality === 'animado' ? `Vamos nessa, ${userName}! Um passo pequeno já conta muito!` : `Estou com você, ${userName}. Vamos cuidar do seu dia com carinho.`}</p></div>
+            <div className="personality-message"><Mascot coat={coat} gender={gender} personality={personality} size="sm" state="happy" accessory="none" /><p>{personality === 'calmo' ? `Sem pressa, ${userName}. Podemos escolher só uma coisa importante para agora.` : personality === 'divertido' ? `Plano do dia: uma tarefa, uma pausa e talvez um petisco imaginário!` : personality === 'animado' ? `Vamos nessa, ${userName}! Um passo pequeno já conta muito!` : `Estou com você, ${userName}. Vamos cuidar do seu dia com carinho.`}</p></div>
           </div>
         )}
 
@@ -186,7 +186,7 @@ export function OnboardingPage() {
             <h1>Parabéns, {userName}!</h1><p>Você adotou seu novo companheiro.</p>
             <div className="adoption-certificate">
               <div className="certificate-ribbon">CERTIFICADO DE ADOÇÃO</div>
-              <div className="certificate-pet"><Mascot coat={coat} size="lg" state="celebrating" /><span>{name || 'Doug'}</span></div>
+              <div className="certificate-pet"><Mascot coat={coat} gender={gender} personality={personality} size="lg" state="celebrating" /><span>{name || 'Doug'}</span></div>
               <div className="certificate-details">
                 <p>Este certificado celebra o início de uma amizade entre</p><h2>{userName} & {name || 'Doug'}</h2>
                 <div><span><small>PELAGEM</small><strong>{coatOptions.find((item) => item.id === coat)?.label.replace('Golden ', '')}</strong></span><span><small>PERSONALIDADE</small><strong>{personality}</strong></span><span><small>DATA DA ADOÇÃO</small><strong>06.08.2026</strong></span></div>

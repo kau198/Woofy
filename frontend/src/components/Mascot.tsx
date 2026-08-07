@@ -1,7 +1,9 @@
-import type { CoatType } from '../types'
+import type { CoatType, Personality, PetGender } from '../types'
 
 interface MascotProps {
   coat?: CoatType
+  gender?: PetGender
+  personality?: Personality
   state?: 'idle' | 'normal' | 'happy' | 'talking' | 'listening' | 'studying' | 'sleeping' | 'celebrating'
   accessory?: 'bandana' | 'bow' | 'none'
   size?: 'sm' | 'md' | 'lg' | 'xl'
@@ -10,6 +12,8 @@ interface MascotProps {
 
 export function Mascot({
   coat = 'golden',
+  gender,
+  personality,
   state = 'happy',
   accessory = 'bandana',
   size = 'lg',
@@ -22,22 +26,44 @@ export function Mascot({
     caramel: 'caramelo',
     red: 'ruivo acobreado',
   }
+  const personalityLabel: Record<Personality, string> = {
+    carinhoso: 'carinhoso',
+    calmo: 'calmo',
+    divertido: 'divertido',
+    animado: 'animado',
+  }
+  const personalityImage: Record<Personality, string> = {
+    carinhoso: 'doug-real-idle.png',
+    calmo: 'doug-real-studying.png',
+    divertido: 'doug-real-talking.png',
+    animado: 'doug-real-excited.png',
+  }
   const isTalking = state === 'talking'
   const imageName = state === 'studying'
     ? 'doug-real-studying.png'
-    : state === 'talking' || state === 'listening' || state === 'celebrating'
+    : state === 'celebrating'
+      ? 'doug-real-excited.png'
+      : state === 'talking'
       ? 'doug-real-talking.png'
-      : 'doug-real-idle.png'
+      : personality
+        ? personalityImage[personality]
+        : state === 'listening'
+          ? 'doug-real-talking.png'
+          : 'doug-real-idle.png'
   const image = `${import.meta.env.BASE_URL}mascots/${imageName}`
-  const idleImage = `${import.meta.env.BASE_URL}mascots/doug-real-idle.png`
+  const idleImage = `${import.meta.env.BASE_URL}mascots/${personality ? personalityImage[personality] : 'doug-real-idle.png'}`
+  const genderDescription = gender === 'female' ? 'fêmea com laço' : gender === 'male' ? 'macho com bandana' : ''
+  const personalityDescription = personality ? `de personalidade ${personalityLabel[personality]}` : ''
 
   return (
     <div
-      className={`mascot mascot-${coat} mascot-${state} mascot-${size} accessory-${accessory} ${className}`}
+      className={`mascot mascot-${coat} mascot-${state} mascot-${size} ${personality ? `mascot-personality-${personality}` : ''} accessory-${accessory} ${className}`}
       data-coat={coat}
       data-state={state}
+      data-gender={gender}
+      data-personality={personality}
       role="img"
-      aria-label={`Golden Retriever de pelagem ${coatLabel[coat]} ${state === 'studying' ? 'estudando' : 'do Woofy'}`}
+      aria-label={`Golden Retriever de pelagem ${coatLabel[coat]} ${genderDescription} ${personalityDescription} ${state === 'studying' ? 'estudando' : 'do Woofy'}`.replace(/\s+/g, ' ').trim()}
     >
       {isTalking && <img className="mascot-talk-idle" src={idleImage} alt="" draggable={false} />}
       <img className="mascot-main-frame" src={image} alt="" draggable={false} />
@@ -49,6 +75,8 @@ export function Mascot({
       {state === 'celebrating' && (
         <span className="photo-confetti" aria-hidden="true"><i /><i /><i /><i /><i /></span>
       )}
+      {gender === 'female' && <span className="gender-marker gender-bow" aria-hidden="true"><i /></span>}
+      {gender === 'male' && <span className="gender-marker gender-bandana" aria-hidden="true"><i /></span>}
       {accessory === 'bow' && <span className="photo-bow" aria-hidden="true"><i /></span>}
     </div>
   )

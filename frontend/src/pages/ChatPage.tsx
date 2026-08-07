@@ -129,7 +129,7 @@ export function ChatPage() {
 
       <section className="chat-main">
         <header className="chat-header chat-header-v2">
-          <div className="chat-header-pet"><Mascot coat={pet.coat} size="sm" state={typing ? 'talking' : 'listening'} accessory="none" /></div>
+          <div className="chat-header-pet"><Mascot coat={pet.coat} gender={pet.gender} personality={pet.personality} size="sm" state={typing ? 'talking' : 'listening'} accessory="none" /></div>
           <div><span>Conversando com</span><h1>{pet.name}</h1><small><i /> Online e sem julgamentos</small></div>
           <div className="chat-header-tools">
             <label className="mode-select"><span>{modes.find((item) => item.id === mode)?.label}</span><ChevronDown /><select value={mode} onChange={(event) => setMode(event.target.value as ChatMode)}>{modes.map((item) => <option value={item.id} key={item.id}>{item.label}</option>)}</select></label>
@@ -140,7 +140,7 @@ export function ChatPage() {
         <div className="chat-messages">
           {messages.length === 1 && (
             <div className="chat-welcome">
-              <div className="chat-welcome-pet"><Mascot coat={pet.coat} size="lg" state="happy" /></div>
+              <div className="chat-welcome-pet"><Mascot coat={pet.coat} gender={pet.gender} personality={pet.personality} size="lg" state="happy" /></div>
               <span>ESPAÇO LIVRE</span>
               <h2>Converse sobre o que quiser.</h2>
               <p>Não precisa escolher uma função. Comece por um interesse ou escreva naturalmente e {pet.name} acompanha você.</p>
@@ -150,7 +150,7 @@ export function ChatPage() {
           <div className="chat-day-divider"><span>Hoje</span></div>
           {messages.map((message) => (
             <div className={`chat-message-row ${message.sender}`} key={message.id}>
-              {message.sender === 'pet' && <span className="chat-message-avatar"><Mascot coat={pet.coat} size="sm" accessory="none" /></span>}
+              {message.sender === 'pet' && <span className="chat-message-avatar"><Mascot coat={pet.coat} gender={pet.gender} personality={pet.personality} size="sm" accessory="none" /></span>}
               <div>
                 <div className="chat-message-bubble">{message.text}</div>
                 {message.suggestion && (
@@ -165,7 +165,7 @@ export function ChatPage() {
               </div>
             </div>
           ))}
-          {typing && <div className="chat-message-row pet"><span className="chat-message-avatar"><Mascot coat={pet.coat} size="sm" accessory="none" /></span><div className="typing-indicator"><i /><i /><i /></div></div>}
+          {typing && <div className="chat-message-row pet"><span className="chat-message-avatar"><Mascot coat={pet.coat} gender={pet.gender} personality={pet.personality} size="sm" state="talking" accessory="none" /></span><div className="typing-indicator"><i /><i /><i /></div></div>}
         </div>
 
         <div className="chat-composer-wrap chat-composer-v2">

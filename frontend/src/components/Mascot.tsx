@@ -43,9 +43,10 @@ export function Mascot({
       : state === 'listening'
         ? 'doug-real-talking.png'
         : 'doug-real-idle.png'
-  const image = `${import.meta.env.BASE_URL}mascots/${usesCoatSheet ? `doug-coat-${coat}.png` : fallbackImageName}`
+  const coatImageName = gender ? `doug-coat-${coat}-${gender}.png` : `doug-coat-${coat}.png`
+  const image = `${import.meta.env.BASE_URL}mascots/${usesCoatSheet ? coatImageName : fallbackImageName}`
   const idleImage = `${import.meta.env.BASE_URL}mascots/doug-real-idle.png`
-  const genderDescription = gender === 'female' ? 'fêmea com laço' : gender === 'male' ? 'macho com bandana' : ''
+  const genderDescription = gender === 'female' ? 'fêmea com laço' : gender === 'male' ? 'macho com gravata' : ''
   const personalityDescription = personality ? `de personalidade ${personalityLabel[personality]}` : ''
 
   return (
@@ -68,8 +69,6 @@ export function Mascot({
       {state === 'celebrating' && (
         <span className="photo-confetti" aria-hidden="true"><i /><i /><i /><i /><i /></span>
       )}
-      {gender === 'female' && <span className="gender-marker gender-bow" aria-hidden="true"><i /></span>}
-      {gender === 'male' && <span className="gender-marker gender-bandana" aria-hidden="true"><i /></span>}
       {accessory === 'bow' && <span className="photo-bow" aria-hidden="true"><i /></span>}
     </div>
   )

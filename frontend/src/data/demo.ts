@@ -61,7 +61,7 @@ export const coatOptions = [
   { id: 'golden', label: 'Dourado natural', color: '#D8AC72' },
   { id: 'honey', label: 'Mel suave', color: '#C28B53' },
   { id: 'caramel', label: 'Caramelo', color: '#9A6648' },
-  { id: 'red', label: 'Ruivo acobreado', color: '#7E4C37' },
+  { id: 'red', label: 'Ruivo acobreado', color: '#A85F32' },
 ] as const
 
 export const objectives = [

@@ -57,8 +57,10 @@ svg { flex: none; }
 
 /* Brand */
 .brand-mark { display: inline-flex; align-items: center; gap: 10px; flex: none; }
-.brand-word { font-size: 27px; font-weight: 850; letter-spacing: -1.6px; color: #2e2923; }
-.brand-icon { width: 34px; height: 34px; position: relative; display: block; }
+.brand-word { font-size: 27px; font-weight: 950; letter-spacing: -1.35px; color: #211d1a; }
+.brand-icon { width: 39px; height: 39px; position: relative; display: block; overflow:hidden; border-radius:50%; background:#f8f1e8; box-shadow:0 3px 0 #c39b68; transition:transform .2s ease,box-shadow .2s ease; }
+.brand-icon img { display:block; width:100%; height:100%; object-fit:cover; transform:scale(1.07); }
+.brand-mark:hover .brand-icon { transform:translateY(-2px) rotate(-2deg); box-shadow:0 5px 0 #b88c56; }
 .brand-face { position: absolute; width: 27px; height: 25px; border-radius: 45% 45% 49% 49%; background: var(--gold); left: 3px; top: 6px; z-index: 2; }
 .brand-ear { position: absolute; width: 11px; height: 19px; background: #c77a25; top: 3px; border-radius: 70% 35% 70% 50%; z-index: 1; }
 .brand-ear-left { left: 0; transform: rotate(16deg); }

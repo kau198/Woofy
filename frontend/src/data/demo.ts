@@ -47,6 +47,7 @@ export const initialHabits: Habit[] = [
   { id: 1, name: 'Beber água', icon: 'water', time: '8 copos', completed: true, color: 'sky' },
   { id: 2, name: 'Ler um pouco', icon: 'book', time: '20 min', completed: false, color: 'amber' },
   { id: 3, name: 'Fazer uma pausa', icon: 'coffee', time: '10 min', completed: false, color: 'rose' },
+  { id: 4, name: 'Dormir antes das 23h', icon: 'sleep', time: '22:45', completed: false, color: 'lavender' },
 ]
 
 export const initialTransactions: PawTransaction[] = [

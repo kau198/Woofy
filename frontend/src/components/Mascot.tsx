@@ -32,26 +32,19 @@ export function Mascot({
     divertido: 'divertido',
     animado: 'animado',
   }
-  const personalityImage: Record<Personality, string> = {
-    carinhoso: 'doug-real-idle.png',
-    calmo: 'doug-real-studying.png',
-    divertido: 'doug-real-talking.png',
-    animado: 'doug-real-excited.png',
-  }
   const isTalking = state === 'talking'
-  const imageName = state === 'studying'
+  const usesCoatSheet = Boolean(personality)
+  const fallbackImageName = state === 'studying'
     ? 'doug-real-studying.png'
     : state === 'celebrating'
       ? 'doug-real-excited.png'
       : state === 'talking'
       ? 'doug-real-talking.png'
-      : personality
-        ? personalityImage[personality]
-        : state === 'listening'
-          ? 'doug-real-talking.png'
-          : 'doug-real-idle.png'
-  const image = `${import.meta.env.BASE_URL}mascots/${imageName}`
-  const idleImage = `${import.meta.env.BASE_URL}mascots/${personality ? personalityImage[personality] : 'doug-real-idle.png'}`
+      : state === 'listening'
+        ? 'doug-real-talking.png'
+        : 'doug-real-idle.png'
+  const image = `${import.meta.env.BASE_URL}mascots/${usesCoatSheet ? `doug-coat-${coat}.png` : fallbackImageName}`
+  const idleImage = `${import.meta.env.BASE_URL}mascots/doug-real-idle.png`
   const genderDescription = gender === 'female' ? 'fêmea com laço' : gender === 'male' ? 'macho com bandana' : ''
   const personalityDescription = personality ? `de personalidade ${personalityLabel[personality]}` : ''
 
@@ -65,8 +58,8 @@ export function Mascot({
       role="img"
       aria-label={`Golden Retriever de pelagem ${coatLabel[coat]} ${genderDescription} ${personalityDescription} ${state === 'studying' ? 'estudando' : 'do Woofy'}`.replace(/\s+/g, ' ').trim()}
     >
-      {isTalking && <img className="mascot-talk-idle" src={idleImage} alt="" draggable={false} />}
-      <img className="mascot-main-frame" src={image} alt="" draggable={false} />
+      {isTalking && !usesCoatSheet && <img className="mascot-talk-idle" src={idleImage} alt="" draggable={false} />}
+      <img className={`mascot-main-frame ${usesCoatSheet ? 'mascot-coat-sheet' : ''}`} src={image} alt="" draggable={false} />
       {(state === 'talking' || state === 'listening') && (
         <span className="mascot-sound-waves" aria-hidden="true"><i /><i /><i /></span>
       )}

@@ -748,3 +748,64 @@ body,.app-shell,.chat-page-v2 { background:#f8f3ed; color:var(--ink); }
 @media (prefers-reduced-motion:reduce){
   .mascot-personality-carinhoso,.mascot-personality-calmo,.mascot-personality-divertido,.mascot-personality-animado{animation:none!important}
 }
+
+/* Real coat assets: the background is baked once and never recolored */
+.mascot>img.mascot-coat-sheet {
+  inset:auto;
+  width:200%;
+  height:200%;
+  max-width:none;
+  object-fit:fill;
+  object-position:center;
+  border-radius:0;
+  transform:none!important;
+  filter:none!important;
+  animation:none!important;
+  opacity:1!important;
+}
+.mascot-personality-carinhoso>img.mascot-coat-sheet { left:0; top:0; }
+.mascot-personality-calmo>img.mascot-coat-sheet { left:-100%; top:0; }
+.mascot-personality-divertido>img.mascot-coat-sheet { left:0; top:-100%; }
+.mascot-personality-animado>img.mascot-coat-sheet { left:-100%; top:-100%; }
+
+/* High-contrast type palette */
+:root { --ink:#211d1a; --muted:#5f5751; }
+body { color:#211d1a; }
+body h1,body h2,body h3,body h4,
+.brand-word,.task-row-title strong,.dashboard-stats strong,
+.quest-card strong,.topic-chat-header strong,.pet-name-display { color:#211d1a; }
+body p,.game-hero-copy>p,.interest-copy>p,.chat-welcome p,
+.page-heading-row p,.focus-topbar p,.quest-card small,
+.topic-doug-message p,.arena-speech p { color:#5b534d; }
+.game-kicker,.page-kicker,.section-kicker,.editor-label,
+.card-heading>div>span,.onboarding-kicker { color:#6b4937; }
+.game-login-link,.public-nav a,.app-nav a,.sidebar-bottom a { color:#342d28; }
+.button-primary,.button-dark,.composer-send,.custom-interest button,
+.dashboard-welcome h1,.dashboard-welcome p,.dashboard-welcome .day-label,
+.game-cta h2,.game-cta p,.game-cta span { color:#fff!important; }
+.button-soft { color:#3f3129; }
+.season-chip,.arena-level,.quest-total,.level-card>span,
+.quest-card>b,.topic-reward { color:#644323; }
+.app-nav a.active,.conversation-modes button.active,
+.preference-mode-grid button.active,.topic-selector button.active { color:#4c3428; }
+.dashboard-game-strip small,.arena-xp small,.topic-chat-header small,
+.pet-display-info small,.pet-stats small { color:#665e57; }
+.quiet-button,.game-social-proof,.live-info-note { color:#514a45; }
+.toolbar-select { position:relative; gap:7px; }
+.toolbar-select select { appearance:none; border:0; background:transparent; color:inherit; font:inherit; font-weight:750; padding:0 20px 0 0; outline:none; cursor:pointer; }
+.toolbar-select>svg:last-child { position:absolute; right:7px; width:13px; pointer-events:none; }
+
+.dark body,.dark .app-shell,.dark .app-main,.dark .chat-page-v2 { background:#1f1b18; color:#f8f3ed; }
+.dark .app-sidebar,.dark .app-header,.dark .dashboard-card,.dark .dashboard-stats article,
+.dark .task-list-panel,.dark .task-side-summary,.dark .habit-table-card,.dark .pet-display-card,
+.dark .pet-editor-card,.dark .accessory-card,.dark .chart-card,.dark .settings-card,
+.dark .profile-card,.dark .chat-page-v2 .chat-sidebar,.dark .chat-message-bubble { background:#2b2622; border-color:#493d35; }
+.dark body h1,.dark body h2,.dark body h3,.dark body h4,.dark .brand-word,
+.dark .task-row-title strong,.dark .dashboard-stats strong,.dark .quest-card strong,
+.dark .pet-name-display { color:#fffaf5; }
+.dark body p,.dark .page-heading-row p,.dark .focus-topbar p,.dark .task-row-meta,
+.dark .dashboard-stats small,.dark .settings-card-heading p,.dark .toggle-row small { color:#d0c5bc; }
+.dark .app-nav a,.dark .sidebar-bottom a,.dark .game-login-link { color:#e8ddd4; }
+.dark .app-nav a.active { background:#49372d; color:#fff; border-color:#715442; }
+.dark input,.dark textarea,.dark select { background:#241f1c!important; color:#fffaf5!important; border-color:#5a4a40!important; }
+.dark .toolbar-button,.dark .search-field,.dark .button-ghost { background:#332c27; color:#f6eee7; border-color:#54463d; }

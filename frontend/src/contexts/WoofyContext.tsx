@@ -14,6 +14,7 @@ interface WoofyContextValue {
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>
   toggleTask: (id: number) => void
   habits: Habit[]
+  setHabits: React.Dispatch<React.SetStateAction<Habit[]>>
   toggleHabit: (id: number) => void
   paws: number
   transactions: PawTransaction[]
@@ -33,30 +34,47 @@ const defaultPet: Pet = {
 
 const WoofyContext = createContext<WoofyContextValue | null>(null)
 
+const STORAGE_KEY = 'woofy_frontend_state_v1'
+
+interface StoredWoofyState {
+  userName?: string
+  interests?: string[]
+  pet?: Pet
+  tasks?: Task[]
+  habits?: Habit[]
+  paws?: number
+  transactions?: PawTransaction[]
+  darkMode?: boolean
+}
+
+function loadStoredState(): StoredWoofyState {
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) as StoredWoofyState : {}
+  } catch {
+    return {}
+  }
+}
+
 export function WoofyProvider({ children }: { children: ReactNode }) {
-  const [userName, setUserName] = useState('Kauã')
-  const [interests, setInterests] = useState<string[]>(() => {
-    try {
-      const stored = window.localStorage.getItem('woofy_interests')
-      return stored ? JSON.parse(stored) as string[] : ['Futebol', 'Games', 'Tecnologia']
-    } catch {
-      return ['Futebol', 'Games', 'Tecnologia']
-    }
-  })
-  const [pet, setPet] = useState(defaultPet)
-  const [tasks, setTasks] = useState(initialTasks)
-  const [habits, setHabits] = useState(initialHabits)
-  const [paws, setPaws] = useState(245)
-  const [transactions, setTransactions] = useState(initialTransactions)
-  const [darkMode, setDarkMode] = useState(false)
+  const [storedState] = useState(loadStoredState)
+  const [userName, setUserName] = useState(storedState.userName ?? 'Kauã')
+  const [interests, setInterests] = useState<string[]>(storedState.interests ?? ['Futebol', 'Games', 'Tecnologia'])
+  const [pet, setPet] = useState(storedState.pet ?? defaultPet)
+  const [tasks, setTasks] = useState(storedState.tasks ?? initialTasks)
+  const [habits, setHabits] = useState(storedState.habits ?? initialHabits)
+  const [paws, setPaws] = useState(storedState.paws ?? 245)
+  const [transactions, setTransactions] = useState(storedState.transactions ?? initialTransactions)
+  const [darkMode, setDarkMode] = useState(storedState.darkMode ?? false)
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode)
   }, [darkMode])
 
   useEffect(() => {
-    window.localStorage.setItem('woofy_interests', JSON.stringify(interests))
-  }, [interests])
+    const snapshot: StoredWoofyState = { userName, interests, pet, tasks, habits, paws, transactions, darkMode }
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot))
+  }, [userName, interests, pet, tasks, habits, paws, transactions, darkMode])
 
   const addPaws = useCallback((amount: number, description: string) => {
     setPaws((current) => current + amount)
@@ -98,6 +116,7 @@ export function WoofyProvider({ children }: { children: ReactNode }) {
       setTasks,
       toggleTask,
       habits,
+      setHabits,
       toggleHabit,
       paws,
       transactions,

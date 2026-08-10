@@ -51,7 +51,7 @@ export function DashboardPage() {
           <div className="card-heading"><div><span>PEQUENOS CUIDADOS</span><h2>Hábitos de hoje</h2></div><Link to="/app/habitos">Ver todos <ArrowRight /></Link></div>
           <div className="habit-list">
             {habits.map((habit) => {
-              const Icon = habit.icon === 'water' ? Droplets : habit.icon === 'book' ? Lightbulb : Coffee
+              const Icon = habit.icon === 'water' ? Droplets : habit.icon === 'book' ? Lightbulb : habit.icon === 'sleep' ? Clock3 : Coffee
               return <button key={habit.id} className={`habit-row ${habit.completed ? 'is-completed' : ''}`} onClick={() => toggleHabit(habit.id)}><span className={`habit-icon habit-${habit.color}`}><Icon /></span><span><strong>{habit.name}</strong><small>{habit.time}</small></span><i>{habit.completed && <Check />}</i></button>
             })}
           </div>

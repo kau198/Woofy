@@ -128,7 +128,7 @@ export function OnboardingPage() {
               {coatOptions.map((option) => (
                 <button type="button" key={option.id} className={coat === option.id ? 'selected' : ''} onClick={() => setCoat(option.id)}>
                   {coat === option.id && <span className="selected-check"><Check /></span>}
-                  <span className="coat-preview"><Mascot coat={option.id} size="md" state="happy" accessory="none" /></span>
+                  <span className="coat-preview"><Mascot coat={option.id} personality="carinhoso" size="md" state="happy" accessory="none" /></span>
                   <strong>{option.label}</strong><small>{option.id === 'cream' ? 'Suave e luminoso' : option.id === 'golden' ? 'Clássico e radiante' : option.id === 'honey' ? 'Quente e acolhedor' : option.id === 'caramel' ? 'Marcante e doce' : 'Vibrante e especial'}</small>
                 </button>
               ))}

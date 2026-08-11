@@ -2,21 +2,33 @@ import {
   ArrowLeft,
   ArrowRight,
   BookOpen,
+  BriefcaseBusiness,
+  CalendarDays,
   Check,
+  Cloud,
   Code2,
   Dumbbell,
   Film,
   Gamepad2,
+  Gauge,
   Heart,
+  Hourglass,
+  Mars,
   Music2,
   Newspaper,
   Palette,
+  PartyPopper,
   PawPrint,
   Plane,
   Plus,
-  Sparkles,
+  Sprout,
+  SunMedium,
   Trophy,
   Utensils,
+  Venus,
+  X,
+  Zap,
+  type LucideIcon,
 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -26,12 +38,22 @@ import { useWoofy } from '../contexts/WoofyContext'
 import { coatOptions, objectives } from '../data/demo'
 import type { CoatType, Personality, PetGender } from '../types'
 
-const personalityOptions: Array<{ id: Personality; emoji: string; title: string; text: string }> = [
-  { id: 'carinhoso', emoji: '♥', title: 'Carinhoso', text: 'Gentil, próximo e cheio de afeto.' },
-  { id: 'calmo', emoji: '☁', title: 'Calmo', text: 'Sereno, paciente e tranquilizador.' },
-  { id: 'divertido', emoji: '✦', title: 'Divertido', text: 'Leve, bem-humorado e espontâneo.' },
-  { id: 'animado', emoji: '⚡', title: 'Animado', text: 'Entusiasmado, energético e vibrante.' },
+const personalityOptions: Array<{ id: Personality; icon: LucideIcon; title: string; text: string }> = [
+  { id: 'carinhoso', icon: Heart, title: 'Carinhoso', text: 'Gentil, próximo e cheio de afeto.' },
+  { id: 'calmo', icon: Cloud, title: 'Calmo', text: 'Sereno, paciente e tranquilizador.' },
+  { id: 'divertido', icon: PartyPopper, title: 'Divertido', text: 'Leve, bem-humorado e espontâneo.' },
+  { id: 'animado', icon: Zap, title: 'Animado', text: 'Entusiasmado, energético e vibrante.' },
 ]
+
+const objectiveIcons: Record<string, LucideIcon> = {
+  'Organizar meus estudos': BookOpen,
+  'Reduzir a procrastinação': Hourglass,
+  'Criar hábitos melhores': Sprout,
+  'Organizar meu trabalho': BriefcaseBusiness,
+  'Cuidar melhor da minha rotina': SunMedium,
+  'Melhorar minha produtividade': Gauge,
+  'Organizar meus compromissos': CalendarDays,
+}
 
 const interestOptions = [
   { id: 'Futebol', label: 'Futebol', icon: Trophy, color: 'green' },
@@ -60,6 +82,7 @@ export function OnboardingPage() {
   const [customInterest, setCustomInterest] = useState('')
 
   const totalSteps = 8
+  const adoptionDate = new Intl.DateTimeFormat('pt-BR').format(new Date())
   const toggleInterest = (interest: string) => {
     setSelectedInterests((current) => current.includes(interest)
       ? current.filter((item) => item !== interest)
@@ -73,7 +96,7 @@ export function OnboardingPage() {
   }
   const saveAndContinue = () => {
     if (step === totalSteps - 1) {
-      setPet({ ...pet, coat, gender, name: name.trim() || 'Doug', personality, objective })
+      setPet({ ...pet, coat, gender, name: name.trim() || 'Doug', personality, objective, adoptionDate })
       setInterests(selectedInterests)
       navigate('/app')
       return
@@ -89,9 +112,9 @@ export function OnboardingPage() {
     <main className="onboarding-page">
       <header className="onboarding-header">
         <BrandMark />
-        <div className="onboarding-progress" aria-label={`Etapa ${Math.min(step + 1, 7)} de 7`}>
-          <span>Etapa {Math.min(step + 1, 7)} de 7</span>
-          <div>{Array.from({ length: 7 }).map((_, index) => <i key={index} className={index <= Math.min(step, 6) ? 'active' : ''} />)}</div>
+        <div className="onboarding-progress" aria-label={`Etapa ${step + 1} de ${totalSteps}`}>
+          <span>Etapa {step + 1} de {totalSteps}</span>
+          <div>{Array.from({ length: totalSteps }).map((_, index) => <i key={index} className={index <= step ? 'active' : ''} />)}</div>
         </div>
         <button type="button" className="quiet-button" onClick={() => navigate('/')}>Sair</button>
       </header>
@@ -116,7 +139,7 @@ export function OnboardingPage() {
               })}
             </div>
             <div className="custom-interest"><input value={customInterest} onChange={(event) => setCustomInterest(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); addCustomInterest() } }} placeholder="Outro interesse: automobilismo, anime, pets..." /><button type="button" onClick={addCustomInterest}><Plus /> Adicionar</button></div>
-            {selectedInterests.some((item) => !interestOptions.some((option) => option.id === item)) && <div className="custom-interest-tags">{selectedInterests.filter((item) => !interestOptions.some((option) => option.id === item)).map((item) => <button type="button" key={item} onClick={() => toggleInterest(item)}>{item} <span>×</span></button>)}</div>}
+            {selectedInterests.some((item) => !interestOptions.some((option) => option.id === item)) && <div className="custom-interest-tags">{selectedInterests.filter((item) => !interestOptions.some((option) => option.id === item)).map((item) => <button type="button" key={item} aria-label={`Remover interesse ${item}`} onClick={() => toggleInterest(item)}>{item} <span aria-hidden="true"><X size={12} strokeWidth={2.5} /></span></button>)}</div>}
             <div className="interest-selection-status"><span>{selectedInterests.length}/8 selecionados</span><div>{Array.from({ length: 8 }).map((_, index) => <i key={index} className={index < selectedInterests.length ? 'active' : ''} />)}</div></div>
           </div>
         )}
@@ -140,8 +163,8 @@ export function OnboardingPage() {
           <div className="choice-step compact-choice step-animate">
             <div className="onboarding-title"><span className="onboarding-kicker">UM POUCO MAIS SOBRE SEU PET</span><h1>Como você quer se referir ao seu companheiro?</h1><p>Isso adapta os pronomes usados nas conversas.</p></div>
             <div className="gender-options">
-              <button type="button" className={gender === 'male' ? 'selected' : ''} onClick={() => setGender('male')}><span>♂</span><strong>Macho</strong><small>Ele / dele</small>{gender === 'male' && <Check />}</button>
-              <button type="button" className={gender === 'female' ? 'selected' : ''} onClick={() => setGender('female')}><span>♀</span><strong>Fêmea</strong><small>Ela / dela</small>{gender === 'female' && <Check />}</button>
+              <button type="button" className={gender === 'male' ? 'selected' : ''} onClick={() => setGender('male')}><span aria-hidden="true"><Mars style={{ position: 'static', width: 31, height: 31 }} /></span><strong>Macho</strong><small>Ele / dele</small>{gender === 'male' && <Check />}</button>
+              <button type="button" className={gender === 'female' ? 'selected' : ''} onClick={() => setGender('female')}><span aria-hidden="true"><Venus style={{ position: 'static', width: 31, height: 31 }} /></span><strong>Fêmea</strong><small>Ela / dela</small>{gender === 'female' && <Check />}</button>
             </div>
             <div className="choice-pet-preview"><Mascot coat={coat} gender={gender} personality={personality} size="lg" state="normal" /></div>
           </div>
@@ -164,7 +187,10 @@ export function OnboardingPage() {
           <div className="choice-step compact-choice step-animate">
             <div className="onboarding-title"><span className="onboarding-kicker">O JEITO DE {name.toUpperCase() || 'DOUG'}</span><h1>Qual personalidade combina mais com vocês?</h1><p>Isso muda o estilo das mensagens, sem deixar de ser acolhedor.</p></div>
             <div className="personality-options">
-              {personalityOptions.map((option) => <button type="button" key={option.id} className={personality === option.id ? 'selected' : ''} onClick={() => setPersonality(option.id)}><span>{option.emoji}</span><strong>{option.title}</strong><small>{option.text}</small>{personality === option.id && <Check />}</button>)}
+              {personalityOptions.map((option) => {
+                const Icon = option.icon
+                return <button type="button" key={option.id} className={personality === option.id ? 'selected' : ''} onClick={() => setPersonality(option.id)}><span aria-hidden="true"><Icon /></span><strong>{option.title}</strong><small>{option.text}</small>{personality === option.id && <Check />}</button>
+              })}
             </div>
             <div className="personality-message"><Mascot coat={coat} gender={gender} personality={personality} size="sm" state="happy" accessory="none" /><p>{personality === 'calmo' ? `Sem pressa, ${userName}. Podemos escolher só uma coisa importante para agora.` : personality === 'divertido' ? `Plano do dia: uma tarefa, uma pausa e talvez um petisco imaginário!` : personality === 'animado' ? `Vamos nessa, ${userName}! Um passo pequeno já conta muito!` : `Estou com você, ${userName}. Vamos cuidar do seu dia com carinho.`}</p></div>
           </div>
@@ -174,22 +200,25 @@ export function OnboardingPage() {
           <div className="choice-step compact-choice step-animate">
             <div className="onboarding-title"><span className="onboarding-kicker">O QUE VOCÊ QUER MELHORAR?</span><h1>Por onde vocês gostariam de começar?</h1><p>Escolha um objetivo principal. Isso poderá mudar a qualquer momento.</p></div>
             <div className="objective-options">
-              {objectives.map((item, index) => <button type="button" key={item} className={objective === item ? 'selected' : ''} onClick={() => setObjective(item)}><span>{['📚', '⏳', '🌱', '💼', '☀️', '⚡', '📅'][index]}</span><strong>{item}</strong>{objective === item && <Check />}</button>)}
+              {objectives.map((item) => {
+                const Icon = objectiveIcons[item] ?? Gauge
+                return <button type="button" key={item} className={objective === item ? 'selected' : ''} onClick={() => setObjective(item)}><span aria-hidden="true"><Icon style={{ marginLeft: 0, width: 20, height: 20 }} /></span><strong>{item}</strong>{objective === item && <Check />}</button>
+              })}
             </div>
           </div>
         )}
 
         {step === 7 && (
           <div className="certificate-step step-animate">
-            <div className="confetti confetti-one">✦</div><div className="confetti confetti-two">●</div><div className="confetti confetti-three">♥</div>
-            <span className="onboarding-kicker"><Sparkles size={15} /> ADOÇÃO CONCLUÍDA</span>
+            <span className="confetti confetti-one" aria-hidden="true"><i /><i /></span><span className="confetti confetti-two" aria-hidden="true"><i /><i /><i /></span><span className="confetti confetti-three" aria-hidden="true"><i /><i /></span>
+            <span className="onboarding-kicker"><PartyPopper size={15} /> ADOÇÃO CONCLUÍDA</span>
             <h1>Parabéns, {userName}!</h1><p>Você adotou seu novo companheiro.</p>
             <div className="adoption-certificate">
               <div className="certificate-ribbon">CERTIFICADO DE ADOÇÃO</div>
               <div className="certificate-pet"><Mascot coat={coat} gender={gender} personality={personality} size="lg" state="celebrating" /><span>{name || 'Doug'}</span></div>
               <div className="certificate-details">
                 <p>Este certificado celebra o início de uma amizade entre</p><h2>{userName} & {name || 'Doug'}</h2>
-                <div><span><small>PELAGEM</small><strong>{coatOptions.find((item) => item.id === coat)?.label.replace('Golden ', '')}</strong></span><span><small>PERSONALIDADE</small><strong>{personality}</strong></span><span><small>DATA DA ADOÇÃO</small><strong>06.08.2026</strong></span></div>
+                <div><span><small>PELAGEM</small><strong>{coatOptions.find((item) => item.id === coat)?.label.replace('Golden ', '')}</strong></span><span><small>PERSONALIDADE</small><strong>{personality}</strong></span><span><small>DATA DA ADOÇÃO</small><strong>{adoptionDate}</strong></span></div>
                 <em>“Um passo de cada vez, sempre juntos.”</em>
               </div>
             </div>

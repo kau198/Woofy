@@ -1,4 +1,5 @@
 import {
+  Award,
   BarChart3,
   CalendarCheck2,
   CheckSquare2,
@@ -11,7 +12,6 @@ import {
   MessageCircle,
   PawPrint,
   Settings,
-  Sparkles,
   X,
 } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
@@ -57,7 +57,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <strong>{pet.name}</strong>
             <i><b style={{ width: `${paws % 100}%` }} /></i>
           </div>
-          <Sparkles size={17} />
+          <Award size={17} aria-hidden="true" />
         </div>
         <div className="sidebar-bottom">
           <NavLink to="/app/configuracoes"><Settings size={20} /> Configurações</NavLink>

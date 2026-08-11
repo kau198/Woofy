@@ -9,16 +9,12 @@ export function PublicFooter() {
         <div className="footer-brand">
           <BrandMark />
           <p>Organize sua vida com um amigo ao seu lado.</p>
-          <div className="social-links">
-            <a href="#instagram" aria-label="Instagram">ig</a>
-            <a href="#linkedin" aria-label="LinkedIn">in</a>
-          </div>
         </div>
         <div className="footer-column">
           <strong>Woofy</strong>
           <Link to="/como-funciona">Como funciona</Link>
-          <a href={`${import.meta.env.BASE_URL}#recursos`}>Recursos</a>
-          <a href={`${import.meta.env.BASE_URL}#ia`}>Inteligência artificial</a>
+          <Link to="/app">Demonstração</Link>
+          <Link to="/criar-conta">Adotar um companheiro</Link>
         </div>
         <div className="footer-column">
           <strong>Suporte</strong>

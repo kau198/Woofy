@@ -1,4 +1,5 @@
-import { CalendarDays, CheckSquare2, ChevronDown, Filter, ListFilter, Plus, Search, X } from 'lucide-react'
+import { CalendarDays, CheckSquare2, ChevronDown, Filter, ListFilter, PawPrint, Plus, Search, X } from 'lucide-react'
+import { AnimatePresence, m } from 'motion/react'
 import { useMemo, useState } from 'react'
 import { TaskRow } from '../components/TaskRow'
 import { useWoofy } from '../contexts/WoofyContext'
@@ -37,16 +38,16 @@ export function TasksPage() {
   }
 
   return (
-    <div className="tasks-page page-enter">
+    <m.div className="tasks-page page-enter" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.28 }}>
       <div className="page-heading-row">
         <div><span className="page-kicker">ORGANIZE SEU DIA</span><h1>Minhas tarefas</h1><p>Um passo de cada vez. Você não precisa resolver tudo agora.</p></div>
-        <button className="button button-primary" onClick={() => setModalOpen(true)}><Plus /> Nova tarefa</button>
+        <m.button className="button button-primary" onClick={() => setModalOpen(true)} whileTap={{ scale: 0.97 }}><Plus aria-hidden="true" /> Nova tarefa</m.button>
       </div>
 
-      <section className="tasks-toolbar">
-        <div className="filter-tabs">{(['Todas', 'Pendentes', 'Concluídas'] as const).map((item) => <button className={filter === item ? 'active' : ''} onClick={() => setFilter(item)} key={item}>{item}<span>{item === 'Todas' ? tasks.length : item === 'Pendentes' ? tasks.filter((task) => !task.completed).length : tasks.filter((task) => task.completed).length}</span></button>)}</div>
+      <m.section className="tasks-toolbar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.36, delay: 0.04 }}>
+        <div className="filter-tabs">{(['Todas', 'Pendentes', 'Concluídas'] as const).map((item) => <m.button className={filter === item ? 'active' : ''} onClick={() => setFilter(item)} key={item} aria-pressed={filter === item} whileTap={{ scale: 0.96 }}>{item}<span>{item === 'Todas' ? tasks.length : item === 'Pendentes' ? tasks.filter((task) => !task.completed).length : tasks.filter((task) => task.completed).length}</span></m.button>)}</div>
         <div className="toolbar-actions"><label className="search-field"><Search /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar tarefa" /></label><label className="toolbar-button toolbar-select"><Filter /><select aria-label="Filtrar por categoria" value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value as typeof categoryFilter)}><option value="Todas">Todas as categorias</option>{['Pessoal', 'Estudos', 'Trabalho', 'Saúde', 'Casa', 'Outros'].map((item) => <option key={item}>{item}</option>)}</select><ChevronDown /></label><label className="toolbar-button toolbar-select"><ListFilter /><select aria-label="Ordenar tarefas" value={order} onChange={(event) => setOrder(event.target.value as typeof order)}><option value="recentes">Mais recentes</option><option value="alfabetica">Ordem alfabética</option><option value="prioridade">Por prioridade</option></select><ChevronDown /></label></div>
-      </section>
+      </m.section>
 
       <div className="tasks-layout">
         <section className="task-list-panel">
@@ -54,15 +55,17 @@ export function TasksPage() {
           <div className="full-task-list">{filtered.filter((task) => task.date === 'Hoje').map((task) => <TaskRow key={task.id} task={task} onToggle={() => toggleTask(task.id)} />)}</div>
           <div className="task-group-heading tomorrow"><span><CalendarDays /> Amanhã</span><small>{tasks.filter((task) => task.date === 'Amanhã').length} tarefa</small></div>
           <div className="full-task-list">{filtered.filter((task) => task.date === 'Amanhã').map((task) => <TaskRow key={task.id} task={task} onToggle={() => toggleTask(task.id)} />)}</div>
-          {filtered.length === 0 && <div className="empty-state"><CheckSquare2 /><h3>Nada por aqui</h3><p>Que tal respirar um pouco ou adicionar uma tarefa pequena?</p></div>}
+          <AnimatePresence>{filtered.length === 0 && <m.div className="empty-state" role="status" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}><CheckSquare2 /><h3>Nada por aqui</h3><p>Que tal respirar um pouco ou adicionar uma tarefa pequena?</p></m.div>}</AnimatePresence>
         </section>
-        <aside className="task-side-summary">
+        <m.aside className="task-side-summary" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.38, delay: 0.08 }}>
           <div className="summary-ring" style={{ '--progress': `${Math.round((tasks.filter((task) => task.completed).length / tasks.length) * 100)}%` } as React.CSSProperties}><span><strong>{tasks.filter((task) => task.completed).length}</strong><small>de {tasks.length}</small></span></div>
-          <h3>Seu dia está andando!</h3><p>Cada tarefa concluída rende 10 patinhas.</p><div className="side-divider" /><span className="paws-earned">🐾 <strong>+{tasks.filter((task) => task.completed).length * 10}</strong> hoje</span>
-        </aside>
+          <h3>Seu dia está andando!</h3><p>Cada tarefa concluída rende 10 patinhas.</p><div className="side-divider" /><span className="paws-earned"><PawPrint aria-hidden="true" /> <m.strong key={tasks.filter((task) => task.completed).length} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }}>+{tasks.filter((task) => task.completed).length * 10}</m.strong> hoje</span>
+        </m.aside>
       </div>
 
-      {modalOpen && <div className="modal-backdrop" role="presentation" onMouseDown={() => setModalOpen(false)}><form className="task-modal" onSubmit={addTask} onMouseDown={(event) => event.stopPropagation()}><div className="modal-heading"><div><span>NOVA TAREFA</span><h2>O que vamos fazer?</h2></div><button type="button" onClick={() => setModalOpen(false)} aria-label="Fechar"><X /></button></div><label>Título<input required autoFocus value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Ex.: Revisar anotações" /></label><label>Descrição <small>opcional</small><textarea rows={3} value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Adicione alguns detalhes" /></label><div className="form-grid"><label>Categoria<select value={category} onChange={(event) => setCategory(event.target.value as TaskCategory)}>{['Pessoal', 'Estudos', 'Trabalho', 'Saúde', 'Casa', 'Outros'].map((item) => <option key={item}>{item}</option>)}</select></label><label>Prioridade<select value={priority} onChange={(event) => setPriority(event.target.value as TaskPriority)}>{['Baixa', 'Média', 'Alta'].map((item) => <option key={item}>{item}</option>)}</select></label></div><div className="modal-footer"><button className="button button-ghost" type="button" onClick={() => setModalOpen(false)}>Cancelar</button><button className="button button-primary" type="submit">Criar tarefa</button></div></form></div>}
-    </div>
+      <AnimatePresence>
+        {modalOpen && <m.div className="modal-backdrop" role="presentation" onMouseDown={() => setModalOpen(false)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><m.form className="task-modal" role="dialog" aria-modal="true" aria-labelledby="task-modal-title" onSubmit={addTask} onMouseDown={(event) => event.stopPropagation()} initial={{ opacity: 0, y: 18, scale: 0.985 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.99 }} transition={{ duration: 0.22 }}><div className="modal-heading"><div><span>NOVA TAREFA</span><h2 id="task-modal-title">O que vamos fazer?</h2></div><button type="button" onClick={() => setModalOpen(false)} aria-label="Fechar"><X /></button></div><label>Título<input required autoFocus value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Ex.: Revisar anotações" /></label><label>Descrição <small>opcional</small><textarea rows={3} value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Adicione alguns detalhes" /></label><div className="form-grid"><label>Categoria<select value={category} onChange={(event) => setCategory(event.target.value as TaskCategory)}>{['Pessoal', 'Estudos', 'Trabalho', 'Saúde', 'Casa', 'Outros'].map((item) => <option key={item}>{item}</option>)}</select></label><label>Prioridade<select value={priority} onChange={(event) => setPriority(event.target.value as TaskPriority)}>{['Baixa', 'Média', 'Alta'].map((item) => <option key={item}>{item}</option>)}</select></label></div><div className="modal-footer"><button className="button button-ghost" type="button" onClick={() => setModalOpen(false)}>Cancelar</button><m.button className="button button-primary" type="submit" whileTap={{ scale: 0.97 }}>Criar tarefa</m.button></div></m.form></m.div>}
+      </AnimatePresence>
+    </m.div>
   )
 }

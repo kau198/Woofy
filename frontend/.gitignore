@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Local high-resolution source artwork; optimized web assets live in public/.
+source-assets/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

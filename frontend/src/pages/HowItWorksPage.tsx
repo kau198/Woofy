@@ -1,4 +1,4 @@
-import { ArrowRight, BrainCircuit, CheckCircle2, Heart, PawPrint, Sparkles } from 'lucide-react'
+import { ArrowRight, BrainCircuit, CheckCircle2, Heart, MessageCircle, PawPrint } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Mascot } from '../components/Mascot'
 import { PublicFooter } from '../components/PublicFooter'
@@ -39,7 +39,7 @@ export function HowItWorksPage() {
           <div className="principles-copy"><span className="section-kicker">Nosso princípio</span><h2>Incentivar é diferente de pressionar.</h2><p>Você não perde sequências, não recebe broncas e não precisa justificar uma pausa. Quando voltar, o Woofy ajuda você a recomeçar pequeno.</p></div>
           <div className="principles-card">
             <div className="principles-mascot"><Mascot size="md" state="normal" /></div>
-            <div className="speech-card"><Sparkles size={18} /><p>Que bom que você voltou! Vamos começar com uma tarefa pequena hoje?</p></div>
+            <div className="speech-card"><MessageCircle size={18} aria-hidden="true" /><p>Que bom que você voltou! Vamos começar com uma tarefa pequena hoje?</p></div>
           </div>
         </section>
 

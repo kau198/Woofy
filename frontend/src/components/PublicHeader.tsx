@@ -12,8 +12,8 @@ export function PublicHeader() {
         <BrandMark />
         <nav className={`public-nav ${open ? 'is-open' : ''}`} aria-label="Navegação principal">
           <NavLink to="/como-funciona" onClick={() => setOpen(false)}>Como funciona</NavLink>
-          <a href={`${import.meta.env.BASE_URL}#recursos`} onClick={() => setOpen(false)}>Recursos</a>
-          <a href={`${import.meta.env.BASE_URL}#ia`} onClick={() => setOpen(false)}>Inteligência artificial</a>
+          <Link to="/app" onClick={() => setOpen(false)}>Demonstração</Link>
+          <Link to="/criar-conta" onClick={() => setOpen(false)}>Adoção</Link>
           <Link className="mobile-login" to="/entrar" onClick={() => setOpen(false)}>Entrar</Link>
         </nav>
         <div className="public-actions">

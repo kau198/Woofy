@@ -10,12 +10,13 @@ import {
   Globe2,
   Languages,
   ListChecks,
+  MessageCircle,
   Mic,
   Paperclip,
   Plus,
-  RotateCcw,
   SlidersHorizontal,
-  Sparkles,
+  Tag,
+  Unlock,
   X,
 } from 'lucide-react'
 import { useRef, useState } from 'react'
@@ -32,8 +33,8 @@ interface ChatMessage {
   suggestion?: boolean
 }
 
-const modes: Array<{ id: ChatMode; label: string; icon: typeof Sparkles }> = [
-  { id: 'livre', label: 'Conversa livre', icon: Sparkles },
+const modes: Array<{ id: ChatMode; label: string; icon: typeof MessageCircle }> = [
+  { id: 'livre', label: 'Conversa livre', icon: MessageCircle },
   { id: 'explorar', label: 'Explorar assuntos', icon: Globe2 },
   { id: 'planejar', label: 'Planejar', icon: CalendarDays },
   { id: 'estudar', label: 'Estudar', icon: BookOpen },
@@ -119,18 +120,15 @@ export function ChatPage() {
     <div className="chat-page chat-page-v2 page-enter">
       <aside className="chat-sidebar">
         <button className="button button-primary button-block" onClick={startNewConversation}><Plus /> Nova conversa</button>
-        <span className="chat-side-label">SUAS CONVERSAS</span>
-        <button className="chat-history-item active"><span><Sparkles /></span><div><strong>Conversa livre</strong><small>Agora</small></div></button>
-        <button className="chat-history-item"><span><CalendarDays /></span><div><strong>Organizar meu dia</strong><small>Hoje</small></div></button>
-        <button className="chat-history-item"><span><BookOpen /></span><div><strong>Plano para a prova</strong><small>Ontem</small></div></button>
-        <button className="chat-history-item"><span><Languages /></span><div><strong>Prática de inglês</strong><small>02 ago</small></div></button>
+        <span className="chat-side-label">CONVERSA ATUAL</span>
+        <button className="chat-history-item active"><span><MessageCircle /></span><div><strong>Conversa livre</strong><small>Agora</small></div></button>
         <div className="chat-safe-note"><Brain /><p>Você controla o contexto. {pet.name} nunca cria ou altera nada sem pedir.</p></div>
       </aside>
 
       <section className="chat-main">
         <header className="chat-header chat-header-v2">
           <div className="chat-header-pet"><Mascot coat={pet.coat} gender={pet.gender} personality={pet.personality} size="sm" state={typing ? 'talking' : 'listening'} accessory="none" /></div>
-          <div><span>Conversando com</span><h1>{pet.name}</h1><small><i /> Online e sem julgamentos</small></div>
+          <div><span>Conversando com</span><h1>{pet.name}</h1><small><i /> Demonstração local</small></div>
           <div className="chat-header-tools">
             <label className="mode-select"><span>{modes.find((item) => item.id === mode)?.label}</span><ChevronDown /><select value={mode} onChange={(event) => setMode(event.target.value as ChatMode)}>{modes.map((item) => <option value={item.id} key={item.id}>{item.label}</option>)}</select></label>
             <button type="button" onClick={() => setPreferencesOpen(true)} aria-label="Preferências da conversa"><SlidersHorizontal /></button>
@@ -144,7 +142,7 @@ export function ChatPage() {
               <span>ESPAÇO LIVRE</span>
               <h2>Converse sobre o que quiser.</h2>
               <p>Não precisa escolher uma função. Comece por um interesse ou escreva naturalmente e {pet.name} acompanha você.</p>
-              <div className="interest-shortcuts">{interests.slice(0, 6).map((interest) => <button type="button" key={interest} onClick={() => send(`Quero conversar sobre ${interest}`)}><Sparkles /> {interest}</button>)}</div>
+              <div className="interest-shortcuts">{interests.slice(0, 6).map((interest) => <button type="button" key={interest} onClick={() => send(`Quero conversar sobre ${interest}`)}><Tag aria-hidden="true" /> {interest}</button>)}</div>
             </div>
           )}
           <div className="chat-day-divider"><span>Hoje</span></div>
@@ -161,7 +159,7 @@ export function ChatPage() {
                     <small>Nada será salvo sem a sua confirmação.</small>
                   </div>
                 )}
-                {message.sender === 'pet' && <div className="message-actions"><button title="Copiar"><Copy /></button><button title="Gerar outra resposta"><RotateCcw /></button></div>}
+                {message.sender === 'pet' && <div className="message-actions"><button type="button" aria-label="Copiar resposta" title="Copiar resposta" onClick={() => void navigator.clipboard?.writeText(message.text)}><Copy /></button></div>}
               </div>
             </div>
           ))}
@@ -191,9 +189,9 @@ export function ChatPage() {
         <div className="preferences-heading"><div><span>PREFERÊNCIAS</span><h2>Sua conversa, seu jeito</h2></div><button onClick={() => setPreferencesOpen(false)}><X /></button></div>
         <div className="preference-section"><strong>Tipo de conversa</strong><div className="preference-mode-grid">{modes.map(({ id, label, icon: Icon }) => <button className={mode === id ? 'active' : ''} key={id} onClick={() => setMode(id)}><Icon /><span>{label}</span>{mode === id && <Check />}</button>)}</div></div>
         <div className="preference-section"><strong>Detalhamento das respostas</strong><div className="detail-control">{(['curto', 'equilibrado', 'detalhado'] as DetailLevel[]).map((item) => <button className={detail === item ? 'active' : ''} key={item} onClick={() => setDetail(item)}>{item}</button>)}</div></div>
-        <div className="preference-section"><strong>Assuntos que você curte</strong><div className="preference-interests">{interests.map((interest) => <span key={interest}><Sparkles /> {interest}</span>)}</div></div>
+        <div className="preference-section"><strong>Assuntos que você curte</strong><div className="preference-interests">{interests.map((interest) => <span key={interest}><Tag aria-hidden="true" /> {interest}</span>)}</div></div>
         <div className="preference-section"><strong>Contexto permitido</strong><label className="preference-toggle"><span><CalendarDays /><span><b>Usar minha rotina</b><small>Tarefas, hábitos e horários ajudam a personalizar respostas.</small></span></span><button className={`toggle ${useRoutine ? 'on' : ''}`} onClick={() => setUseRoutine((value) => !value)}><i /></button></label><label className="preference-toggle"><span><Globe2 /><span><b>Alternar idiomas livremente</b><small>{pet.name} acompanha o idioma da sua mensagem.</small></span></span><button className="toggle on"><i /></button></label></div>
-        <div className="freedom-note"><Sparkles /><p><strong>Você não está preso a um modo.</strong> As opções só ajudam a calibrar a resposta. Escreva o que quiser a qualquer momento.</p></div>
+        <div className="freedom-note"><Unlock aria-hidden="true" /><p><strong>Você não está preso a um modo.</strong> As opções só ajudam a calibrar a resposta. Escreva o que quiser a qualquer momento.</p></div>
       </aside>
       {preferencesOpen && <button className="preferences-overlay" onClick={() => setPreferencesOpen(false)} aria-label="Fechar preferências" />}
     </div>

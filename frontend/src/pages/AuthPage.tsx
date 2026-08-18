@@ -1,9 +1,8 @@
-import { ArrowLeft, ArrowRight, CheckCircle2, Eye, EyeOff, LockKeyhole, Mail, PawPrint, UserRound } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle2, Eye, EyeOff, LockKeyhole, Mail, Pause, PawPrint, Play, UserRound } from 'lucide-react'
 import { m } from 'motion/react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { BrandMark } from '../components/BrandMark'
-import { Mascot } from '../components/Mascot'
 import { useWoofy } from '../contexts/WoofyContext'
 
 export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
@@ -11,6 +10,8 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
   const { setUserName } = useWoofy()
   const [showPassword, setShowPassword] = useState(false)
   const [name, setName] = useState('')
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const isRegister = mode === 'register'
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -19,42 +20,55 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
     navigate(isRegister ? '/adocao' : '/app')
   }
 
+  const toggleVideo = () => {
+    const video = videoRef.current
+    if (!video) return
+    if (video.paused) void video.play()
+    else video.pause()
+  }
+
   return (
     <m.main id="main-content" className="auth-page" tabIndex={-1} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.32 }}>
-      <div className="auth-landscape" aria-hidden="true">
-        <span className="auth-sun" />
-        <span className="auth-cloud auth-cloud-one" />
-        <span className="auth-cloud auth-cloud-two" />
-        <span className="auth-mountain auth-mountain-far" />
-        <span className="auth-mountain auth-mountain-near" />
-        <span className="auth-hill auth-hill-left" />
-        <span className="auth-hill auth-hill-right" />
-        <span className="auth-path" />
-        <span className="auth-forest auth-forest-back"><i /><i /><i /><i /><i /><i /><i /></span>
-        <span className="auth-forest auth-forest-front"><i /><i /><i /><i /><i /><i /></span>
-        <span className="auth-fireflies"><i /><i /><i /><i /><i /><i /></span>
+      <div className="auth-video-shell" aria-hidden="true">
+        <video
+          ref={videoRef}
+          className="auth-video"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          poster={`${import.meta.env.BASE_URL}mascots/doug-real-idle.webp`}
+          onPlay={() => setIsVideoPlaying(true)}
+          onPause={() => setIsVideoPlaying(false)}
+        >
+          <source src={`${import.meta.env.BASE_URL}videos/doug-running.mp4`} type="video/mp4" />
+        </video>
+        <div className="auth-video-grade" />
       </div>
-      <m.section className="auth-visual-panel" initial={{ opacity: 0, x: -18 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}>
-        <div className="auth-scene-top">
-          <Link className="auth-back" to="/"><ArrowLeft size={18} /> Voltar para o início</Link>
-          <span>GOOD DAYS / {isRegister ? 'ADOÇÃO' : 'REENCONTRO'}</span>
+
+      <header className="auth-topbar">
+        <div className="auth-brand-link"><BrandMark /></div>
+        <Link className="auth-back" to="/"><ArrowLeft size={16} /> Voltar</Link>
+      </header>
+
+      <m.section className="auth-story" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.58, ease: [0.22, 1, 0.36, 1] }}>
+        <span className="auth-kicker"><i /> ROTINA BOA TEM COMPANHIA</span>
+        <h1>{isRegister ? 'Um passo de cada vez. Sempre juntos.' : 'Doug estava esperando por você.'}</h1>
+        <p>{isRegister ? 'Crie seu espaço, adote seu companheiro e transforme pequenas metas em dias que dão orgulho.' : 'Continue sua rotina no seu ritmo — sem pressão, sem julgamento e com muita companhia.'}</p>
+        <div className="auth-story-tags" aria-label="Benefícios do Woofy">
+          <span><PawPrint aria-hidden="true" /> Companhia real</span>
+          <span>Gentil por design</span>
+          <span>Feito para o seu ritmo</span>
         </div>
-        <div className="auth-visual-content">
-          <span className="auth-kicker">UM AMIGO PARA A VIDA REAL</span>
-          <h1>{isRegister ? 'Seu novo companheiro está quase aqui.' : 'Que bom ter você de volta.'}</h1>
-          <p>{isRegister ? 'Crie sua conta e adote um Golden Retriever que vai acompanhar cada pequeno passo.' : 'Seu companheiro guardou seu cantinho e está pronto para continuar de onde vocês pararam.'}</p>
-          <div className="auth-mascot-stage"><Mascot size="lg" state={isRegister ? 'happy' : 'normal'} /><m.div className="auth-bubble" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28, duration: 0.32 }}>{isRegister ? 'Estou esperando por você.' : 'Senti sua falta! Vamos juntos?'}</m.div></div>
-        </div>
-        <p className="auth-quote">“O Woofy incentiva, mas nunca julga.”</p>
       </m.section>
-      <m.section className="auth-form-panel" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.08 }}>
-        <div className="auth-mobile-brand"><BrandMark /></div>
+
+      <m.section className="auth-form-panel" aria-label={isRegister ? 'Criar conta' : 'Entrar'} initial={{ opacity: 0, x: 22 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.48, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}>
         <div className="auth-form-wrap">
-          <div className="auth-card-brand"><BrandMark /><span>ACESSO SEGURO<br />AO SEU ESPAÇO</span></div>
           <div className="auth-form-heading">
-            <m.span className="auth-paw" initial={{ scale: 0.88, rotate: -6 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 260, damping: 18 }}><PawPrint aria-hidden="true" /></m.span>
+            <span className="auth-form-eyebrow">{isRegister ? 'COMECE AGORA' : 'BEM-VINDO DE VOLTA'}</span>
             <h2>{isRegister ? 'Crie sua conta' : 'Entre na sua conta'}</h2>
-            <p>{isRegister ? 'Leva menos de dois minutos.' : 'Seu companheiro está esperando.'}</p>
+            <p>{isRegister ? 'Leva menos de dois minutos.' : 'Seu cantinho continua do mesmo jeito.'}</p>
           </div>
           <m.form className="auth-form" onSubmit={handleSubmit} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.16, duration: 0.32 }}>
             {isRegister && <label>Seu nome<div className="input-wrap"><UserRound size={19} /><input required value={name} onChange={(event) => setName(event.target.value)} placeholder="Como podemos chamar você?" /></div></label>}
@@ -72,6 +86,12 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
           <span className="auth-card-foot"><PawPrint aria-hidden="true" /> SEU RITMO. SEU COMPANHEIRO.</span>
         </div>
       </m.section>
+
+      <span className="auth-film-credit">VÍDEO: YAROSLAV BILGOVSKIY / PEXELS</span>
+      <button className="auth-video-control" type="button" onClick={toggleVideo} aria-label={isVideoPlaying ? 'Pausar vídeo de fundo' : 'Reproduzir vídeo de fundo'}>
+        {isVideoPlaying ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
+        <span>{isVideoPlaying ? 'Pausar cena' : 'Reproduzir cena'}</span>
+      </button>
     </m.main>
   )
 }

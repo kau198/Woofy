@@ -1386,7 +1386,6 @@ select {
 .task-checkbox.checked,
 .toggle.on { background: var(--wf-forest); }
 
-.dark body,
 .dark .app-shell,
 .dark .app-main { background: #151b17; color: var(--wf-paper-strong); }
 .dark .app-sidebar { background: #071f16; }
@@ -1436,6 +1435,152 @@ select {
 
 .dark .woofy-home { background: var(--wf-paper); color: var(--wf-ink); }
 .dark .woofy-home .brand-word { color: var(--wf-ink); }
+
+/* Contrast contract -------------------------------------------------------
+   Theme colors must describe the surface they sit on. This final layer keeps
+   text readable when the saved dark preference meets intentionally light
+   editorial panels, and prevents public pages from inheriting app colors. */
+.button-primary,
+.button-primary:hover { color: var(--wf-ink) !important; }
+
+.paws-balance,
+.paws-balance span { color: #493c21; }
+.sidebar-pet-card span { color: #4b3027; }
+.woofy-manifesto-signature p { color: rgba(255, 253, 248, 0.84); }
+.woofy-final-copy p { color: var(--wf-ink); }
+.auth-form label,
+.google-button { color: var(--wf-ink); }
+.divider span,
+.google-button small,
+.onboarding-reassurance,
+.onboarding-progress > span { color: #655d55; }
+.auth-switch a,
+.form-meta a { color: #87432f; }
+.equipped-label { background: #76503f; }
+
+.dark .onboarding-header .brand-word { color: var(--wf-ink); }
+
+.dark .app-main h1,
+.dark .app-main h2,
+.dark .app-main h3,
+.dark .app-main h4,
+.dark .app-main strong { color: var(--wf-paper-strong); }
+.dark .app-main p,
+.dark .app-main small { color: #c7d1c9; }
+.dark .app-main .page-kicker,
+.dark .app-main .section-kicker,
+.dark .app-main .card-heading > div > span,
+.dark .app-main .editor-label { color: var(--wf-lime); }
+
+.dark .paws-balance,
+.dark .paws-balance span { color: #493c21; }
+.dark .sidebar-pet-card,
+.dark .sidebar-pet-card span,
+.dark .sidebar-pet-card strong { color: var(--wf-ink); }
+
+.dark .dashboard-welcome h1,
+.dark .dashboard-welcome p,
+.dark .dashboard-welcome .day-label { color: var(--wf-ink) !important; }
+.dark .dashboard-game-strip .level-card > span { color: var(--wf-lime); }
+.dark .dashboard-game-strip .level-card strong { color: var(--wf-paper-strong); }
+.dark .dashboard-game-strip .level-card small { color: #c7d1c9; }
+.dark .habit-note { background: #24342d; color: #e8efe9; }
+.dark .gentle-note strong { color: var(--wf-paper-strong); }
+.dark .gentle-note p,
+.dark .focus-tips span { color: #c7d1c9; }
+
+.dark .sound-button,
+.dark .focus-speech,
+.dark .timer-panel { color: var(--wf-ink); }
+.dark .sound-button,
+.dark .focus-speech { border-color: #cfc7bc; background: var(--wf-paper-strong); }
+.dark .timer-panel :is(h1, h2, h3, h4, strong, p, span, i, button) { color: inherit; }
+.dark .timer-panel .timer-task > span,
+.dark .timer-panel .timer-ring span,
+.dark .timer-panel .focus-reward p { color: #5f5751; }
+.dark .timer-panel .timer-presets button { color: #5b534d; }
+.dark .timer-panel .timer-presets button.active { color: #873f30; }
+.dark .timer-panel .timer-main { color: #fff; }
+.dark .timer-panel .focus-reward strong { color: #825618; }
+
+.dark .chat-page-v2 .chat-history-item.active {
+  border-color: #6c5547;
+  background: #3b302a;
+  color: var(--wf-paper-strong);
+}
+.dark .chat-page-v2 .chat-history-item.active small { color: #c7d1c9; }
+.dark .chat-welcome > span { color: var(--wf-lime); }
+.dark .chat-day-divider span { background: #151b17; color: #c7d1c9; }
+.dark .chat-composer-wrap,
+.dark .chat-preferences { border-color: #46534b; background: #202923; color: var(--wf-paper-strong); }
+.dark .conversation-modes button,
+.dark .preferences-heading button,
+.dark .preference-mode-grid button,
+.dark .detail-control button {
+  border-color: #526158;
+  background: #2b352e;
+  color: #edf3ee;
+}
+.dark .chat-preferences :is(h2, strong, b, p) { color: var(--wf-paper-strong); }
+.dark .chat-preferences small { color: #c7d1c9; }
+.dark .preference-mode-grid button.active,
+.dark .detail-control button.active { border-color: #93ad7f; background: #34483b; color: #f8fff8; }
+
+.dark .pet-display-info small,
+.dark .pet-level small,
+.dark .pet-stats small { color: #c7d1c9; }
+.dark .equipped-bandana { color: var(--wf-ink); }
+.dark .pet-personality-grid button,
+.dark .segmented-control button,
+.dark .theme-options > button {
+  color: var(--wf-ink);
+}
+.dark .pet-personality-grid button strong,
+.dark .segmented-control button,
+.dark .theme-options > button strong { color: var(--wf-ink); }
+
+.dark .accessories-tabs button.active {
+  border-bottom-color: var(--wf-lime);
+  color: var(--wf-lime);
+}
+.dark .item-status,
+.dark .owned,
+.dark .price,
+.dark .store-note strong { color: #dbe5dd; }
+.dark .store-note p { color: #c7d1c9; }
+.dark .big-paw-balance,
+.dark .big-paw-balance strong,
+.dark .big-paw-balance small { color: #6d491c; }
+
+.priority-high { color: #84382b; }
+.priority-medium { color: #75490e; }
+.priority-low { color: #2f665b; }
+.filter-tabs button span { color: #5b534d; }
+.big-habit-check { color: #665e57; }
+
+.dark .pet-bubble,
+.dark .pet-bubble p,
+.dark .pet-bubble strong { color: var(--wf-ink); }
+.dark .habit-row { background: #202923; }
+.dark .habit-row small { color: #c7d1c9; }
+.dark .week-badge,
+.dark .week-badge small { color: #315e54; }
+
+.dark .timer-main { background: #704938; }
+
+.dark .chat-safe-note,
+.dark .chat-safe-note p,
+.dark .freedom-note,
+.dark .freedom-note p,
+.dark .freedom-note strong { color: var(--wf-ink); }
+.dark .preferences-heading span { color: var(--wf-lime); }
+
+.dark .positive { color: #91d4bf; }
+.dark .transaction-row b { color: var(--wf-yellow); }
+.dark .donut-legend span { color: #c7d1c9; }
+.dark .task-row-title > span { background: #2b352e; color: #dbe5dd; }
+.dark .dashboard-stats article > a { color: var(--wf-yellow); }
+.dark .filter-tabs button { color: #c7d1c9; }
 
 @media (min-width: 960px) and (min-height: 720px) {
   .woofy-manifesto-cinematic {

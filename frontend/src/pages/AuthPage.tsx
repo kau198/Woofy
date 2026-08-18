@@ -21,19 +21,36 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
 
   return (
     <m.main id="main-content" className="auth-page" tabIndex={-1} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.32 }}>
+      <div className="auth-landscape" aria-hidden="true">
+        <span className="auth-sun" />
+        <span className="auth-cloud auth-cloud-one" />
+        <span className="auth-cloud auth-cloud-two" />
+        <span className="auth-mountain auth-mountain-far" />
+        <span className="auth-mountain auth-mountain-near" />
+        <span className="auth-hill auth-hill-left" />
+        <span className="auth-hill auth-hill-right" />
+        <span className="auth-path" />
+        <span className="auth-forest auth-forest-back"><i /><i /><i /><i /><i /><i /><i /></span>
+        <span className="auth-forest auth-forest-front"><i /><i /><i /><i /><i /><i /></span>
+        <span className="auth-fireflies"><i /><i /><i /><i /><i /><i /></span>
+      </div>
       <m.section className="auth-visual-panel" initial={{ opacity: 0, x: -18 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}>
-        <Link className="auth-back" to="/"><ArrowLeft size={18} /> Voltar para o início</Link>
+        <div className="auth-scene-top">
+          <Link className="auth-back" to="/"><ArrowLeft size={18} /> Voltar para o início</Link>
+          <span>GOOD DAYS / {isRegister ? 'ADOÇÃO' : 'REENCONTRO'}</span>
+        </div>
         <div className="auth-visual-content">
           <span className="auth-kicker">UM AMIGO PARA A VIDA REAL</span>
           <h1>{isRegister ? 'Seu novo companheiro está quase aqui.' : 'Que bom ter você de volta.'}</h1>
           <p>{isRegister ? 'Crie sua conta e adote um Golden Retriever que vai acompanhar cada pequeno passo.' : 'Seu companheiro guardou seu cantinho e está pronto para continuar de onde vocês pararam.'}</p>
-          <div className="auth-mascot-stage"><Mascot size="xl" state={isRegister ? 'happy' : 'normal'} /><m.div className="auth-bubble" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28, duration: 0.32 }}>{isRegister ? 'Estou esperando por você.' : 'Senti sua falta! Vamos juntos?'}</m.div></div>
+          <div className="auth-mascot-stage"><Mascot size="lg" state={isRegister ? 'happy' : 'normal'} /><m.div className="auth-bubble" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28, duration: 0.32 }}>{isRegister ? 'Estou esperando por você.' : 'Senti sua falta! Vamos juntos?'}</m.div></div>
         </div>
         <p className="auth-quote">“O Woofy incentiva, mas nunca julga.”</p>
       </m.section>
       <m.section className="auth-form-panel" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.08 }}>
         <div className="auth-mobile-brand"><BrandMark /></div>
         <div className="auth-form-wrap">
+          <div className="auth-card-brand"><BrandMark /><span>ACESSO SEGURO<br />AO SEU ESPAÇO</span></div>
           <div className="auth-form-heading">
             <m.span className="auth-paw" initial={{ scale: 0.88, rotate: -6 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 260, damping: 18 }}><PawPrint aria-hidden="true" /></m.span>
             <h2>{isRegister ? 'Crie sua conta' : 'Entre na sua conta'}</h2>
@@ -52,6 +69,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
           <button className="google-button" type="button" disabled><GoogleMark /> Google <small>em breve</small></button>
           <p className="auth-switch">{isRegister ? 'Já tem uma conta?' : 'Ainda não tem uma conta?'} <Link to={isRegister ? '/entrar' : '/criar-conta'}>{isRegister ? 'Entrar' : 'Criar conta'}</Link></p>
           {isRegister && <p className="auth-terms">Ao continuar, você concorda com nossos <Link to="/termos">Termos de Uso</Link> e <Link to="/privacidade">Política de Privacidade</Link>.</p>}
+          <span className="auth-card-foot"><PawPrint aria-hidden="true" /> SEU RITMO. SEU COMPANHEIRO.</span>
         </div>
       </m.section>
     </m.main>

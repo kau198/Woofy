@@ -973,7 +973,7 @@ body h3 {
 }
 
 .app-nav a:hover { border-color: rgba(255, 253, 248, 0.3); background: rgba(255, 255, 255, 0.06); color: #fff; }
-.app-nav a.active { border-color: var(--wf-ink); background: var(--wf-lime); box-shadow: 3px 3px 0 #000; color: var(--wf-ink); }
+.app-nav a.active { border-color: var(--wf-ink); background: var(--area-accent, var(--wf-lime)); box-shadow: 3px 3px 0 #000; color: var(--wf-ink); }
 
 .sidebar-pet-card {
   border: 1.5px solid var(--wf-paper-strong);
@@ -1776,9 +1776,20 @@ select {
   --app-faint: #6c756e;
   --app-line: rgba(23, 32, 25, 0.24);
   --app-line-strong: rgba(23, 32, 25, 0.46);
+  --area-accent: var(--wf-yellow);
   min-height: 100vh;
   background: var(--app-bg);
 }
+
+.app-shell[data-area="tasks"] { --area-accent: var(--wf-coral); }
+.app-shell[data-area="habits"] { --area-accent: var(--wf-lime); }
+.app-shell[data-area="focus"] { --area-accent: var(--wf-blue); }
+.app-shell[data-area="chat"] { --area-accent: var(--wf-pink); }
+.app-shell[data-area="pet"] { --area-accent: var(--wf-yellow); }
+.app-shell[data-area="rewards"] { --area-accent: var(--wf-coral); }
+.app-shell[data-area="progress"] { --area-accent: var(--wf-blue); }
+.app-shell[data-area="settings"],
+.app-shell[data-area="profile"] { --area-accent: var(--wf-lime); }
 
 .app-sidebar {
   background:
@@ -1835,6 +1846,16 @@ select {
   backdrop-filter: blur(18px) saturate(1.15);
 }
 
+.app-header::after {
+  position: absolute;
+  bottom: -1.5px;
+  left: 31px;
+  width: clamp(74px, 9vw, 138px);
+  height: 3px;
+  background: var(--area-accent);
+  content: "";
+}
+
 .app-header-left { min-width: 0; display: flex; align-items: center; gap: 10px; }
 .app-header-left .brand-mark { display: none; }
 .sidebar-trigger { display: none; }
@@ -1851,11 +1872,15 @@ select {
   from { opacity: 0; transform: translateX(7px); }
 }
 .app-route-label small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   color: var(--app-faint);
   font-size: 8px;
   font-weight: 850;
   letter-spacing: 0.14em;
 }
+.app-route-label small i { width: 12px; height: 4px; background: var(--area-accent); display: inline-block; }
 .app-route-label strong {
   overflow: hidden;
   color: var(--app-ink);
@@ -1863,6 +1888,17 @@ select {
   font-weight: 780;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.app-route-motto {
+  margin-left: 10px;
+  padding-left: 20px;
+  border-left: 1px solid var(--app-line-strong);
+  color: var(--app-faint);
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
 }
 
 .paws-balance { min-height: 38px; padding-inline: 13px; }
@@ -1896,6 +1932,9 @@ select {
 .day-label,
 .section-kicker,
 .card-heading > div > span { color: #1e6049; font-size: 10px; }
+
+.page-kicker { display: inline-flex; align-items: center; gap: 8px; }
+.page-kicker::before { width: 16px; height: 5px; background: var(--area-accent); content: ""; }
 
 .dashboard-welcome,
 .habit-hero-card,
@@ -2039,9 +2078,10 @@ select {
 .dark .app-route-label { border-color: var(--app-line-strong); }
 .dark .app-route-label small { color: var(--app-faint); }
 .dark .app-route-label strong { color: var(--app-ink); }
+.dark .app-route-motto { border-color: var(--app-line-strong); color: var(--app-faint); }
 .dark .app-nav a.active {
   border-color: var(--wf-ink);
-  background: var(--wf-lime);
+  background: var(--area-accent);
   box-shadow: 3px 3px 0 #000;
   color: var(--wf-ink);
 }
@@ -2089,6 +2129,7 @@ select {
   .app-route-label { padding-left: 11px; }
   .app-route-label small { display: none; }
   .app-route-label strong { font-size: 11px; }
+  .app-route-motto { display: none; }
   .page-heading-row { align-items: flex-start; }
 }
 

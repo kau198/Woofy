@@ -21,28 +21,31 @@ import { BrandMark } from './BrandMark'
 import { Mascot } from './Mascot'
 
 const navItems = [
-  { to: '/app', label: 'Início', icon: Home, end: true },
-  { to: '/app/tarefas', label: 'Tarefas', icon: CheckSquare2 },
-  { to: '/app/habitos', label: 'Hábitos', icon: CalendarCheck2 },
-  { to: '/app/foco', label: 'Modo foco', icon: Clock3 },
-  { to: '/app/conversar', label: 'Conversar', icon: MessageCircle },
-  { to: '/app/meu-pet', label: 'Meu Pet', icon: PawPrint },
-  { to: '/app/acessorios', label: 'Acessórios', icon: Gift },
-  { to: '/app/progresso', label: 'Progresso', icon: BarChart3 },
+  { to: '/app', label: 'Início', icon: Home, end: true, area: 'home', motto: 'Seu dia em movimento' },
+  { to: '/app/tarefas', label: 'Tarefas', icon: CheckSquare2, area: 'tasks', motto: 'Uma coisa de cada vez' },
+  { to: '/app/habitos', label: 'Hábitos', icon: CalendarCheck2, area: 'habits', motto: 'Cuidado que vira rotina' },
+  { to: '/app/foco', label: 'Modo foco', icon: Clock3, area: 'focus', motto: 'Presença antes de pressa' },
+  { to: '/app/conversar', label: 'Conversar', icon: MessageCircle, area: 'chat', motto: 'Companhia sem julgamento' },
+  { to: '/app/meu-pet', label: 'Meu Pet', icon: PawPrint, area: 'pet', motto: 'Seu companheiro, do seu jeito' },
+  { to: '/app/acessorios', label: 'Acessórios', icon: Gift, area: 'rewards', motto: 'Conquistas com personalidade' },
+  { to: '/app/progresso', label: 'Progresso', icon: BarChart3, area: 'progress', motto: 'Ritmo também é avanço' },
 ]
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { paws, pet, userName } = useWoofy()
   const location = useLocation()
+  const currentNavIndex = navItems.findIndex(({ to, end }) => end ? location.pathname === to : location.pathname.startsWith(to))
   const activeArea = location.pathname === '/app/configuracoes'
-    ? 'Configurações'
+    ? { label: 'Configurações', area: 'settings', motto: 'O Woofy no seu ritmo', code: '09' }
     : location.pathname === '/app/perfil'
-      ? 'Perfil'
-      : navItems.find(({ to, end }) => end ? location.pathname === to : location.pathname.startsWith(to))?.label ?? 'Seu espaço'
+      ? { label: 'Perfil', area: 'profile', motto: 'Sua história por aqui', code: '10' }
+      : currentNavIndex >= 0
+        ? { ...navItems[currentNavIndex], code: String(currentNavIndex + 1).padStart(2, '0') }
+        : { label: 'Seu espaço', area: 'home', motto: 'Rotina com companhia', code: '00' }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-area={activeArea.area}>
       <aside className={`app-sidebar ${mobileOpen ? 'is-open' : ''}`}>
         <div className="sidebar-top">
           <BrandMark />
@@ -80,9 +83,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             <button className="sidebar-trigger" onClick={() => setMobileOpen(true)} aria-label="Abrir menu"><Menu /></button>
             <BrandMark compact />
             <span className="app-route-label" key={location.pathname}>
-              <small>WOOFY / ESPAÇO</small>
-              <strong>{activeArea}</strong>
+              <small><i aria-hidden="true" /> WOOFY / {activeArea.code}</small>
+              <strong>{activeArea.label}</strong>
             </span>
+            <span className="app-route-motto">{activeArea.motto}</span>
           </div>
           <div className="app-header-actions">
             <div className="paws-balance"><PawPrint size={17} fill="currentColor" /> <strong>{paws}</strong><span>patinhas</span></div>

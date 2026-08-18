@@ -109,7 +109,7 @@ export function OnboardingPage() {
   }
 
   return (
-    <main className="onboarding-page">
+    <main id="main-content" className="onboarding-page" tabIndex={-1}>
       <header className="onboarding-header">
         <BrandMark />
         <div className="onboarding-progress" aria-label={`Etapa ${step + 1} de ${totalSteps}`}>

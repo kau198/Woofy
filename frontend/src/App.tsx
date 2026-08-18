@@ -23,33 +23,36 @@ function AppArea({ children }: { children: ReactNode }) {
 }
 
 function RouteFallback() {
-  return <div className="route-loader" role="status"><span aria-hidden="true" /><strong>WOOFY</strong><small>Abrindo seu espaço</small></div>
+  return <main id="main-content" className="route-loader" role="status" tabIndex={-1}><span aria-hidden="true" /><strong>WOOFY</strong><small>Abrindo seu espaço</small></main>
 }
 
 export default function App() {
   return (
-    <Suspense fallback={<RouteFallback />}>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/como-funciona" element={<HowItWorksPage />} />
-        <Route path="/entrar" element={<AuthPage mode="login" />} />
-        <Route path="/criar-conta" element={<AuthPage mode="register" />} />
-        <Route path="/adocao" element={<OnboardingPage />} />
-        <Route path="/contato" element={<StaticPage type="contact" />} />
-        <Route path="/termos" element={<StaticPage type="terms" />} />
-        <Route path="/privacidade" element={<StaticPage type="privacy" />} />
-        <Route path="/app" element={<AppArea><DashboardPage /></AppArea>} />
-        <Route path="/app/tarefas" element={<AppArea><TasksPage /></AppArea>} />
-        <Route path="/app/habitos" element={<AppArea><HabitsPage /></AppArea>} />
-        <Route path="/app/foco" element={<AppArea><FocusPage /></AppArea>} />
-        <Route path="/app/conversar" element={<AppArea><ChatPage /></AppArea>} />
-        <Route path="/app/meu-pet" element={<AppArea><PetPage /></AppArea>} />
-        <Route path="/app/acessorios" element={<AppArea><AccessoriesPage /></AppArea>} />
-        <Route path="/app/progresso" element={<AppArea><ProgressPage /></AppArea>} />
-        <Route path="/app/perfil" element={<AppArea><SettingsPage profile /></AppArea>} />
-        <Route path="/app/configuracoes" element={<AppArea><SettingsPage /></AppArea>} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </Suspense>
+    <>
+      <a className="skip-link" href="#main-content">Pular para o conteúdo</a>
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/como-funciona" element={<HowItWorksPage />} />
+          <Route path="/entrar" element={<AuthPage mode="login" />} />
+          <Route path="/criar-conta" element={<AuthPage mode="register" />} />
+          <Route path="/adocao" element={<OnboardingPage />} />
+          <Route path="/contato" element={<StaticPage type="contact" />} />
+          <Route path="/termos" element={<StaticPage type="terms" />} />
+          <Route path="/privacidade" element={<StaticPage type="privacy" />} />
+          <Route path="/app" element={<AppArea><DashboardPage /></AppArea>} />
+          <Route path="/app/tarefas" element={<AppArea><TasksPage /></AppArea>} />
+          <Route path="/app/habitos" element={<AppArea><HabitsPage /></AppArea>} />
+          <Route path="/app/foco" element={<AppArea><FocusPage /></AppArea>} />
+          <Route path="/app/conversar" element={<AppArea><ChatPage /></AppArea>} />
+          <Route path="/app/meu-pet" element={<AppArea><PetPage /></AppArea>} />
+          <Route path="/app/acessorios" element={<AppArea><AccessoriesPage /></AppArea>} />
+          <Route path="/app/progresso" element={<AppArea><ProgressPage /></AppArea>} />
+          <Route path="/app/perfil" element={<AppArea><SettingsPage profile /></AppArea>} />
+          <Route path="/app/configuracoes" element={<AppArea><SettingsPage /></AppArea>} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+    </>
   )
 }

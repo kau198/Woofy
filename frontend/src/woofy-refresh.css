@@ -25,6 +25,36 @@
   background: var(--wf-paper);
 }
 
+.skip-link {
+  position: fixed;
+  z-index: 1000;
+  top: 12px;
+  left: 12px;
+  border: 2px solid var(--wf-ink);
+  border-radius: 7px;
+  background: var(--wf-lime);
+  box-shadow: 3px 3px 0 var(--wf-ink);
+  color: var(--wf-ink);
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 850;
+  transform: translateY(calc(-100% - 20px));
+  transition: transform 160ms ease;
+}
+
+.skip-link:focus-visible { transform: translateY(0); }
+
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--wf-coral-dark);
+  outline-offset: 3px;
+}
+
+.dark :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline-color: var(--wf-lime);
+}
+
+#main-content:focus { outline: none; }
+
 html { scroll-padding-top: 24px; }
 
 body {

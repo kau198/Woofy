@@ -20,7 +20,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
   }
 
   return (
-    <m.main className="auth-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.32 }}>
+    <m.main id="main-content" className="auth-page" tabIndex={-1} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.32 }}>
       <m.section className="auth-visual-panel" initial={{ opacity: 0, x: -18 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}>
         <Link className="auth-back" to="/"><ArrowLeft size={18} /> Voltar para o início</Link>
         <div className="auth-visual-content">

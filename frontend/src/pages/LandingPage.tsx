@@ -165,7 +165,7 @@ export function LandingPage() {
         </div>
       </header>
 
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section className="woofy-hero">
           <m.div
             className="woofy-hero-copy"

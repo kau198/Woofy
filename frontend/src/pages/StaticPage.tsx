@@ -7,7 +7,7 @@ export function StaticPage({ type }: { type: 'contact' | 'terms' | 'privacy' }) 
   return (
     <div className="public-page">
       <PublicHeader />
-      <main className="static-page">
+      <main id="main-content" className="static-page" tabIndex={-1}>
         <div className="static-heading"><span>Woofy • Transparência e cuidado</span><h1>{title}</h1><p>{type === 'contact' ? 'Dúvidas, ideias ou só quer dizer oi? Nosso time vai adorar conversar com você.' : 'Última atualização: 06 de agosto de 2026.'}</p></div>
         {type === 'contact' ? (
           <div className="contact-grid">

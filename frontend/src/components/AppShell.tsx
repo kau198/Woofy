@@ -82,7 +82,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </NavLink>
           </div>
         </header>
-        <main className="app-main">{children}</main>
+        <main id="main-content" className="app-main" tabIndex={-1}>{children}</main>
       </div>
 
       <nav className="mobile-bottom-nav" aria-label="Navegação móvel">

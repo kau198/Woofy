@@ -21,7 +21,7 @@ import {
 } from 'lucide-react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { AnimatePresence, m, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
+import { AnimatePresence, m, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BrandMark } from '../components/BrandMark'
@@ -89,6 +89,10 @@ export function LandingPage() {
   const progress = useSpring(scrollYProgress, { stiffness: 130, damping: 28, mass: 0.3 })
   const dogY = useTransform(scrollYProgress, [0, 0.26], [0, 38])
   const dogRotate = useTransform(scrollYProgress, [0, 0.26], [-2, 2])
+  const stageTiltX = useMotionValue(0)
+  const stageTiltY = useMotionValue(0)
+  const smoothStageTiltX = useSpring(stageTiltX, { stiffness: 170, damping: 22, mass: 0.45 })
+  const smoothStageTiltY = useSpring(stageTiltY, { stiffness: 170, damping: 22, mass: 0.45 })
 
   useLayoutEffect(() => {
     const section = manifestoRef.current
@@ -218,10 +222,30 @@ export function LandingPage() {
             </m.div>
           </m.div>
 
-          <div className="woofy-hero-stage" aria-label="Doug, o companheiro virtual do Woofy">
+          <m.div
+            className="woofy-hero-stage"
+            aria-label="Doug, o companheiro virtual do Woofy"
+            style={{
+              rotateX: shouldReduceMotion ? 0 : smoothStageTiltX,
+              rotateY: shouldReduceMotion ? 0 : smoothStageTiltY,
+              transformPerspective: 1200,
+            }}
+            onPointerMove={(event) => {
+              if (shouldReduceMotion || event.pointerType === 'touch') return
+              const bounds = event.currentTarget.getBoundingClientRect()
+              const horizontal = (event.clientX - bounds.left) / bounds.width - 0.5
+              const vertical = (event.clientY - bounds.top) / bounds.height - 0.5
+              stageTiltX.set(vertical * -5)
+              stageTiltY.set(horizontal * 6)
+            }}
+            onPointerLeave={() => {
+              stageTiltX.set(0)
+              stageTiltY.set(0)
+            }}
+          >
             <span className="woofy-stage-serial">DOUG // 01</span>
             <span className="woofy-stage-word" aria-hidden="true">GOOD<br />DAYS</span>
-            <m.div className="woofy-dog-frame" style={{ y: shouldReduceMotion ? 0 : dogY, rotate: shouldReduceMotion ? 0 : dogRotate }}>
+            <m.div className="woofy-dog-frame" style={{ y: shouldReduceMotion ? 0 : dogY, rotate: shouldReduceMotion ? 0 : dogRotate, z: shouldReduceMotion ? 0 : 34 }}>
               <img
                 src={`${import.meta.env.BASE_URL}mascots/doug-hero.webp`}
                 alt="Doug, um Golden Retriever sorridente, levantando a pata"
@@ -233,6 +257,7 @@ export function LandingPage() {
             </m.div>
             <m.div
               className="woofy-doug-note"
+              style={{ z: shouldReduceMotion ? 0 : 62 }}
               initial={{ opacity: 0, x: 26, rotate: 3 }}
               animate={{ opacity: 1, x: 0, rotate: -2 }}
               transition={{ delay: 0.48, type: 'spring', stiffness: 170, damping: 18 }}
@@ -242,6 +267,7 @@ export function LandingPage() {
             </m.div>
             <m.div
               className="woofy-hero-quest"
+              style={{ z: shouldReduceMotion ? 0 : 52 }}
               initial={{ opacity: 0, x: -28, rotate: -4 }}
               animate={{ opacity: 1, x: 0, rotate: 2 }}
               transition={{ delay: 0.56, type: 'spring', stiffness: 170, damping: 18 }}
@@ -251,7 +277,7 @@ export function LandingPage() {
               <b><PawPrint fill="currentColor" /> +10</b>
             </m.div>
             <span className="woofy-stage-sticker"><Flame fill="currentColor" /> 3 DIAS<br />NO SEU RITMO</span>
-          </div>
+          </m.div>
         </section>
 
         <div className="woofy-marquee" aria-hidden="true">

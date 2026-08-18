@@ -1,4 +1,5 @@
 import {
+  ArrowUpRight,
   Award,
   BarChart3,
   CalendarCheck2,
@@ -11,11 +12,13 @@ import {
   Menu,
   MessageCircle,
   PawPrint,
+  Search,
   Settings,
   X,
 } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { AnimatePresence, m, useReducedMotion } from 'motion/react'
+import { useEffect, useState, type ReactNode } from 'react'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useWoofy } from '../contexts/WoofyContext'
 import { BrandMark } from './BrandMark'
 import { Mascot } from './Mascot'
@@ -33,8 +36,40 @@ const navItems = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [commandOpen, setCommandOpen] = useState(false)
+  const [commandQuery, setCommandQuery] = useState('')
   const { paws, pet, userName } = useWoofy()
   const location = useLocation()
+  const navigate = useNavigate()
+  const shouldReduceMotion = useReducedMotion()
+  const commandItems = [
+    ...navItems.map((item, index) => ({ ...item, code: String(index + 1).padStart(2, '0') })),
+    { to: '/app/configuracoes', label: 'Configurações', icon: Settings, area: 'settings', motto: 'O Woofy no seu ritmo', code: '09' },
+  ]
+  const visibleCommandItems = commandItems.filter(({ label, motto }) => `${label} ${motto}`.toLocaleLowerCase('pt-BR').includes(commandQuery.trim().toLocaleLowerCase('pt-BR')))
+
+  useEffect(() => {
+    const handleShortcut = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault()
+        setCommandQuery('')
+        setCommandOpen((open) => !open)
+      }
+      if (event.key === 'Escape') setCommandOpen(false)
+    }
+    window.addEventListener('keydown', handleShortcut)
+    return () => window.removeEventListener('keydown', handleShortcut)
+  }, [])
+
+  const openCommand = () => {
+    setCommandQuery('')
+    setCommandOpen(true)
+  }
+
+  const selectCommand = (to: string) => {
+    navigate(to)
+    setCommandOpen(false)
+  }
   const currentNavIndex = navItems.findIndex(({ to, end }) => end ? location.pathname === to : location.pathname.startsWith(to))
   const activeArea = location.pathname === '/app/configuracoes'
     ? { label: 'Configurações', area: 'settings', motto: 'O Woofy no seu ritmo', code: '09' }
@@ -89,6 +124,11 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="app-route-motto">{activeArea.motto}</span>
           </div>
           <div className="app-header-actions">
+            <button className="app-command-trigger" onClick={openCommand} aria-label="Buscar uma área" aria-keyshortcuts="Control+K Meta+K">
+              <Search aria-hidden="true" />
+              <span>Buscar</span>
+              <kbd>⌘K</kbd>
+            </button>
             <div className="paws-balance"><PawPrint size={17} fill="currentColor" /> <strong>{paws}</strong><span>patinhas</span></div>
             <NavLink className="profile-chip" to="/app/perfil">
               <span className="profile-avatar">{userName.charAt(0)}</span>
@@ -97,8 +137,71 @@ export function AppShell({ children }: { children: ReactNode }) {
             </NavLink>
           </div>
         </header>
-        <main id="main-content" className="app-main" tabIndex={-1}>{children}</main>
+        <main
+          id="main-content"
+          className="app-main"
+          tabIndex={-1}
+          onPointerMove={(event) => {
+            if (event.pointerType === 'touch') return
+            const bounds = event.currentTarget.getBoundingClientRect()
+            event.currentTarget.style.setProperty('--pointer-x', `${event.clientX - bounds.left}px`)
+            event.currentTarget.style.setProperty('--pointer-y', `${event.clientY - bounds.top}px`)
+          }}
+        >{children}</main>
       </div>
+
+      <AnimatePresence>
+        {commandOpen && (
+          <m.div
+            className="app-command-backdrop"
+            role="presentation"
+            onMouseDown={() => setCommandOpen(false)}
+            initial={shouldReduceMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <m.section
+              className="app-command"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navegação rápida"
+              onMouseDown={(event) => event.stopPropagation()}
+              initial={shouldReduceMotion ? false : { opacity: 0, y: -14, scale: 0.985 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.99 }}
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="app-command-search">
+                <Search aria-hidden="true" />
+                <input
+                  autoFocus
+                  value={commandQuery}
+                  onChange={(event) => setCommandQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' && visibleCommandItems[0]) selectCommand(visibleCommandItems[0].to)
+                  }}
+                  placeholder="Para onde você quer ir?"
+                  aria-label="Buscar área"
+                />
+                <kbd>ESC</kbd>
+              </div>
+              <div className="app-command-results">
+                <span className="app-command-label">ÁREAS DO SEU ESPAÇO</span>
+                {visibleCommandItems.map(({ to, label, icon: Icon, motto, code, area }) => (
+                  <m.button key={to} type="button" data-area={area} onClick={() => selectCommand(to)} whileHover={shouldReduceMotion ? undefined : { x: 4 }} whileTap={{ scale: 0.99 }}>
+                    <span className="app-command-code">{code}</span>
+                    <span className="app-command-icon"><Icon aria-hidden="true" /></span>
+                    <span><strong>{label}</strong><small>{motto}</small></span>
+                    <ArrowUpRight aria-hidden="true" />
+                  </m.button>
+                ))}
+                {!visibleCommandItems.length && <p className="app-command-empty">Nenhuma área encontrada. Tente outro nome.</p>}
+              </div>
+              <footer><span><kbd>↵</kbd> abrir</span><span><kbd>ESC</kbd> fechar</span><strong>GOOD DAYS, YOUR WAY.</strong></footer>
+            </m.section>
+          </m.div>
+        )}
+      </AnimatePresence>
 
       <nav className="mobile-bottom-nav" aria-label="Navegação móvel">
         {navItems.slice(0, 4).map(({ to, label, icon: Icon, end }) => (

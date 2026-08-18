@@ -1901,11 +1901,42 @@ select {
   text-transform: uppercase;
 }
 
+.app-command-trigger {
+  min-height: 36px;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.36);
+  color: var(--app-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 0 11px;
+  font-size: 10px;
+  font-weight: 740;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+.app-command-trigger:hover { border-color: var(--app-ink); background: var(--app-surface-strong); color: var(--app-ink); transform: translateY(-1px); }
+.app-command-trigger > svg { width: 15px; height: 15px; }
+.app-command-trigger kbd,
+.app-command kbd {
+  border: 1px solid var(--app-line);
+  border-bottom-color: var(--app-line-strong);
+  border-radius: 4px;
+  background: var(--app-surface-strong);
+  color: var(--app-faint);
+  padding: 3px 5px;
+  font: 800 8px/1 Manrope, sans-serif;
+  box-shadow: 0 1px 0 var(--app-line-strong);
+}
+
 .paws-balance { min-height: 38px; padding-inline: 13px; }
 .paws-balance span,
 .profile-name { font-size: 11px; }
 
 .app-main {
+  --pointer-x: 50%;
+  --pointer-y: 0px;
   position: relative;
   min-height: calc(100vh - 72px);
   color: var(--app-ink);
@@ -1914,6 +1945,15 @@ select {
     linear-gradient(rgba(23, 32, 25, 0.026) 1px, transparent 1px),
     linear-gradient(90deg, rgba(23, 32, 25, 0.026) 1px, transparent 1px);
   background-size: 32px 32px;
+}
+
+.app-main::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: radial-gradient(360px circle at var(--pointer-x) var(--pointer-y), color-mix(in srgb, var(--area-accent) 17%, transparent), transparent 72%);
+  content: "";
+  pointer-events: none;
 }
 
 .app-main > * { position: relative; z-index: 1; }
@@ -2054,6 +2094,93 @@ select {
 .timer-presets button { min-height: 34px; font-size: 10px; }
 .focus-tips span { color: var(--app-muted); font-size: 11px; }
 
+.app-command-backdrop {
+  position: fixed;
+  z-index: 120;
+  inset: 0;
+  padding: min(11vh, 96px) 20px 30px;
+  background: rgba(7, 17, 12, 0.62);
+  backdrop-filter: blur(12px) saturate(0.8);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.app-command {
+  width: min(620px, 100%);
+  max-height: min(720px, 82vh);
+  overflow: hidden;
+  border: 2px solid var(--wf-ink);
+  border-radius: 11px;
+  background: var(--app-surface-strong);
+  color: var(--app-ink);
+  box-shadow: 10px 10px 0 #07110c;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-command-search {
+  min-height: 67px;
+  border-bottom: 1px solid var(--app-line-strong);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+}
+.app-command-search > svg { width: 21px; color: var(--app-faint); }
+.app-command-search input {
+  width: 100%;
+  min-height: 52px;
+  border: 0 !important;
+  outline: 0;
+  background: transparent !important;
+  color: var(--app-ink) !important;
+  font-size: 15px !important;
+  font-weight: 650;
+}
+.app-command-search input::placeholder { color: var(--app-faint); opacity: 1; }
+
+.app-command-results { overflow-y: auto; padding: 14px 12px 12px; }
+.app-command-label { display: block; padding: 0 8px 9px; color: var(--app-faint); font-size: 8px; font-weight: 850; letter-spacing: 0.14em; }
+.app-command-results > button {
+  --command-accent: var(--wf-yellow);
+  width: 100%;
+  min-height: 58px;
+  border: 0;
+  border-top: 1px solid var(--app-line);
+  background: transparent;
+  color: var(--app-ink);
+  display: grid;
+  grid-template-columns: 28px 38px 1fr 18px;
+  align-items: center;
+  gap: 11px;
+  padding: 8px;
+  text-align: left;
+  cursor: pointer;
+}
+.app-command-results > button:hover { background: color-mix(in srgb, var(--command-accent) 22%, transparent); }
+.app-command-results > button:last-of-type { border-bottom: 1px solid var(--app-line); }
+.app-command-results > button[data-area="tasks"],
+.app-command-results > button[data-area="rewards"] { --command-accent: var(--wf-coral); }
+.app-command-results > button[data-area="habits"],
+.app-command-results > button[data-area="settings"] { --command-accent: var(--wf-lime); }
+.app-command-results > button[data-area="focus"],
+.app-command-results > button[data-area="progress"] { --command-accent: var(--wf-blue); }
+.app-command-results > button[data-area="chat"] { --command-accent: var(--wf-pink); }
+.app-command-code { color: var(--app-faint); font-size: 8px; font-weight: 850; letter-spacing: 0.08em; }
+.app-command-icon { width: 34px; height: 34px; border: 1px solid var(--wf-ink); border-radius: 50%; background: var(--command-accent); display: grid; place-items: center; }
+.app-command-icon svg { width: 16px; height: 16px; }
+.app-command-results button > span:nth-child(3) { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.app-command-results button strong { color: var(--app-ink); font-size: 12px; }
+.app-command-results button small { overflow: hidden; color: var(--app-faint); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.app-command-results button > svg { width: 16px; color: var(--app-faint); transition: color 160ms ease, transform 160ms ease; }
+.app-command-results button:hover > svg { color: var(--app-ink); transform: translate(2px, -2px); }
+.app-command-empty { margin: 0; padding: 30px 12px; color: var(--app-muted); font-size: 12px; text-align: center; }
+.app-command footer { min-height: 42px; border-top: 1px solid var(--app-line-strong); background: var(--app-bg); display: flex; align-items: center; gap: 14px; padding: 0 18px; color: var(--app-faint); font-size: 8px; }
+.app-command footer span { display: inline-flex; align-items: center; gap: 5px; }
+.app-command footer strong { margin-left: auto; color: var(--app-ink); font-size: 8px; letter-spacing: 0.1em; }
+
 .dark .app-shell {
   --app-bg: #101713;
   --app-surface: #17211b;
@@ -2074,11 +2201,20 @@ select {
     linear-gradient(90deg, rgba(251, 248, 239, 0.026) 1px, transparent 1px);
 }
 
+.dark .app-main::before { opacity: 0.3; }
+
 .dark .app-header { border-color: var(--app-line-strong); background: rgba(16, 23, 19, 0.88); }
 .dark .app-route-label { border-color: var(--app-line-strong); }
 .dark .app-route-label small { color: var(--app-faint); }
 .dark .app-route-label strong { color: var(--app-ink); }
 .dark .app-route-motto { border-color: var(--app-line-strong); color: var(--app-faint); }
+.dark .app-command-trigger { background: rgba(255, 255, 255, 0.04); }
+.dark .app-command-trigger:hover { border-color: var(--app-ink); background: var(--app-surface-strong); color: var(--app-ink); }
+.dark .app-command-trigger kbd,
+.dark .app-command kbd { background: var(--app-surface); color: var(--app-muted); }
+.dark .app-command { border-color: #050a07; background: var(--app-surface-strong); box-shadow: 10px 10px 0 var(--wf-lime); }
+.dark .app-command-results > button { color: var(--app-ink); }
+.dark .app-command-results > button:hover { background: color-mix(in srgb, var(--command-accent) 15%, transparent); }
 .dark .app-nav a.active {
   border-color: var(--wf-ink);
   background: var(--area-accent);
@@ -2130,6 +2266,9 @@ select {
   .app-route-label small { display: none; }
   .app-route-label strong { font-size: 11px; }
   .app-route-motto { display: none; }
+  .app-command-trigger span,
+  .app-command-trigger kbd { display: none; }
+  .app-command-trigger { width: 36px; padding: 0; justify-content: center; }
   .page-heading-row { align-items: flex-start; }
 }
 
@@ -2140,6 +2279,14 @@ select {
   .task-row:hover,
   .habit-table-row:hover { padding-inline: 6px; }
   .accessory-card:hover { box-shadow: none; transform: none; }
+  .app-command-backdrop { padding: 14px; align-items: center; }
+  .app-command { max-height: 86vh; box-shadow: 6px 6px 0 #07110c; }
+  .app-command-results > button { grid-template-columns: 24px 35px 1fr 16px; gap: 8px; }
+  .app-command footer strong { display: none; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .app-main::before { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2152,4 +2299,5 @@ select {
   .mascot *,
   .arena-speech > i,
   .floating-loot { animation: none !important; }
+  .app-main::before { display: none; }
 }

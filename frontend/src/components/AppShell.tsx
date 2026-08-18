@@ -15,7 +15,7 @@ import {
   X,
 } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { useWoofy } from '../contexts/WoofyContext'
 import { BrandMark } from './BrandMark'
 import { Mascot } from './Mascot'
@@ -34,6 +34,12 @@ const navItems = [
 export function AppShell({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { paws, pet, userName } = useWoofy()
+  const location = useLocation()
+  const activeArea = location.pathname === '/app/configuracoes'
+    ? 'Configurações'
+    : location.pathname === '/app/perfil'
+      ? 'Perfil'
+      : navItems.find(({ to, end }) => end ? location.pathname === to : location.pathname.startsWith(to))?.label ?? 'Seu espaço'
 
   return (
     <div className="app-shell">
@@ -43,8 +49,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           <button className="sidebar-close" onClick={() => setMobileOpen(false)} aria-label="Fechar menu"><X /></button>
         </div>
         <nav className="app-nav" aria-label="Navegação do aplicativo">
-          {navItems.map(({ to, label, icon: Icon, end }) => (
+          {navItems.map(({ to, label, icon: Icon, end }, index) => (
             <NavLink key={to} to={to} end={end} onClick={() => setMobileOpen(false)}>
+              <small aria-hidden="true">{String(index + 1).padStart(2, '0')}</small>
               <Icon size={20} strokeWidth={2} />
               <span>{label}</span>
             </NavLink>
@@ -72,6 +79,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="app-header-left">
             <button className="sidebar-trigger" onClick={() => setMobileOpen(true)} aria-label="Abrir menu"><Menu /></button>
             <BrandMark compact />
+            <span className="app-route-label" key={location.pathname}>
+              <small>WOOFY / ESPAÇO</small>
+              <strong>{activeArea}</strong>
+            </span>
           </div>
           <div className="app-header-actions">
             <div className="paws-balance"><PawPrint size={17} fill="currentColor" /> <strong>{paws}</strong><span>patinhas</span></div>

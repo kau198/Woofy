@@ -1,6 +1,5 @@
 import {
   ArrowUpRight,
-  Award,
   BarChart3,
   CalendarCheck2,
   CheckSquare2,
@@ -72,12 +71,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
   const currentNavIndex = navItems.findIndex(({ to, end }) => end ? location.pathname === to : location.pathname.startsWith(to))
   const activeArea = location.pathname === '/app/configuracoes'
-    ? { label: 'Configurações', area: 'settings', motto: 'O Woofy no seu ritmo', code: '09' }
+    ? { label: 'Configurações', area: 'settings' }
     : location.pathname === '/app/perfil'
-      ? { label: 'Perfil', area: 'profile', motto: 'Sua história por aqui', code: '10' }
+      ? { label: 'Perfil', area: 'profile' }
       : currentNavIndex >= 0
-        ? { ...navItems[currentNavIndex], code: String(currentNavIndex + 1).padStart(2, '0') }
-        : { label: 'Seu espaço', area: 'home', motto: 'Rotina com companhia', code: '00' }
+        ? navItems[currentNavIndex]
+        : { label: 'Seu espaço', area: 'home' }
 
   return (
     <div className="app-shell" data-area={activeArea.area}>
@@ -87,9 +86,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           <button className="sidebar-close" onClick={() => setMobileOpen(false)} aria-label="Fechar menu"><X /></button>
         </div>
         <nav className="app-nav" aria-label="Navegação do aplicativo">
-          {navItems.map(({ to, label, icon: Icon, end }, index) => (
+          {navItems.map(({ to, label, icon: Icon, end }) => (
             <NavLink key={to} to={to} end={end} onClick={() => setMobileOpen(false)}>
-              <small aria-hidden="true">{String(index + 1).padStart(2, '0')}</small>
               <Icon size={20} strokeWidth={2} />
               <span>{label}</span>
             </NavLink>
@@ -98,11 +96,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="sidebar-pet-card">
           <div className="sidebar-pet-visual"><Mascot coat={pet.coat} gender={pet.gender} personality={pet.personality} size="sm" state="listening" accessory="none" /></div>
           <div>
-            <span>Nível {Math.floor(paws / 100) + 1} · Seu companheiro</span>
             <strong>{pet.name}</strong>
-            <i><b style={{ width: `${paws % 100}%` }} /></i>
+            <span>Seu companheiro</span>
           </div>
-          <Award size={17} aria-hidden="true" />
         </div>
         <div className="sidebar-bottom">
           <NavLink to="/app/configuracoes"><Settings size={20} /> Configurações</NavLink>
@@ -118,10 +114,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             <button className="sidebar-trigger" onClick={() => setMobileOpen(true)} aria-label="Abrir menu"><Menu /></button>
             <BrandMark compact />
             <span className="app-route-label" key={location.pathname}>
-              <small><i aria-hidden="true" /> WOOFY / {activeArea.code}</small>
               <strong>{activeArea.label}</strong>
             </span>
-            <span className="app-route-motto">{activeArea.motto}</span>
           </div>
           <div className="app-header-actions">
             <button className="app-command-trigger" onClick={openCommand} aria-label="Buscar uma área" aria-keyshortcuts="Control+K Meta+K">
@@ -141,12 +135,6 @@ export function AppShell({ children }: { children: ReactNode }) {
           id="main-content"
           className="app-main"
           tabIndex={-1}
-          onPointerMove={(event) => {
-            if (event.pointerType === 'touch') return
-            const bounds = event.currentTarget.getBoundingClientRect()
-            event.currentTarget.style.setProperty('--pointer-x', `${event.clientX - bounds.left}px`)
-            event.currentTarget.style.setProperty('--pointer-y', `${event.clientY - bounds.top}px`)
-          }}
         >{children}</main>
       </div>
 

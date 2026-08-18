@@ -1,13 +1,7 @@
 import {
-  Activity,
   ArrowRight,
-  BadgePlus,
-  BadgeCheck,
-  BookmarkCheck,
-  BrainCircuit,
   Check,
   Clock3,
-  Flame,
   Gamepad2,
   Heart,
   MessageCircle,
@@ -177,10 +171,6 @@ export function LandingPage() {
             animate={{ opacity: 1 }}
             transition={{ staggerChildren: 0.1 }}
           >
-            <m.div className="woofy-edition" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
-              <span>WOOFY® / 2026</span>
-              <span>COMPANHEIRO DE ROTINA</span>
-            </m.div>
             <m.h1
               initial={{ opacity: 0, y: 34 }}
               animate={{ opacity: 1, y: 0 }}
@@ -210,16 +200,6 @@ export function LandingPage() {
                 Jogar a demonstração
               </Link>
             </m.div>
-            <m.div
-              className="woofy-hero-proof"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.38, duration: 0.6 }}
-            >
-              <span><BadgeCheck /> Sem ranking tóxico</span>
-              <span><BrainCircuit /> IA só quando ajuda</span>
-              <span><Heart /> Zero culpa</span>
-            </m.div>
           </m.div>
 
           <m.div
@@ -243,8 +223,6 @@ export function LandingPage() {
               stageTiltY.set(0)
             }}
           >
-            <span className="woofy-stage-serial">DOUG // 01</span>
-            <span className="woofy-stage-word" aria-hidden="true">GOOD<br />DAYS</span>
             <m.div className="woofy-dog-frame" style={{ y: shouldReduceMotion ? 0 : dogY, rotate: shouldReduceMotion ? 0 : dogRotate, z: shouldReduceMotion ? 0 : 34 }}>
               <img
                 src={`${import.meta.env.BASE_URL}mascots/doug-hero.webp`}
@@ -265,31 +243,8 @@ export function LandingPage() {
               <MessageCircle />
               <p>Eu seguro o ritmo.<br /><strong>Você escolhe o passo.</strong></p>
             </m.div>
-            <m.div
-              className="woofy-hero-quest"
-              style={{ z: shouldReduceMotion ? 0 : 52 }}
-              initial={{ opacity: 0, x: -28, rotate: -4 }}
-              animate={{ opacity: 1, x: 0, rotate: 2 }}
-              transition={{ delay: 0.56, type: 'spring', stiffness: 170, damping: 18 }}
-            >
-              <span className="woofy-quest-check"><Check /></span>
-              <span><small>MISSÃO DO DIA</small><strong>Começar pequeno</strong></span>
-              <b><PawPrint fill="currentColor" /> +10</b>
-            </m.div>
-            <span className="woofy-stage-sticker"><Flame fill="currentColor" /> 3 DIAS<br />NO SEU RITMO</span>
           </m.div>
         </section>
-
-        <div className="woofy-marquee" aria-hidden="true">
-          <div>
-            <span>MENOS CULPA</span><PawPrint fill="currentColor" />
-            <span>MAIS RITMO</span><Activity />
-            <span>UM PASSO DE CADA VEZ</span><Heart fill="currentColor" />
-            <span>MENOS CULPA</span><PawPrint fill="currentColor" />
-            <span>MAIS RITMO</span><Activity />
-            <span>UM PASSO DE CADA VEZ</span><Heart fill="currentColor" />
-          </div>
-        </div>
 
         <section ref={manifestoRef} className="woofy-manifesto woofy-manifesto-cinematic" id="experiencia">
           <div className="woofy-manifesto-title">
@@ -320,13 +275,11 @@ export function LandingPage() {
             <span className="woofy-section-index">02 / MISSÕES REAIS</span>
             <h2>Progresso que dá vontade de continuar.</h2>
             <p>Clique nas missões. A recompensa aparece na hora, o Doug comemora e amanhã começa leve de novo.</p>
-            <div className="woofy-mini-rule"><BookmarkCheck /><span><strong>Regra do Woofy</strong>Feito é melhor que perfeito — e pausas também contam.</span></div>
           </m.div>
 
           <m.div className="woofy-mission-console" {...reveal} transition={{ ...reveal.transition, delay: 0.12 }}>
             <div className="woofy-console-topline">
               <div><span>PAINEL DO DIA</span><strong>Hoje · missão atual</strong></div>
-              <span className="woofy-live-dot">AO VIVO</span>
             </div>
             <div className="woofy-console-progress">
               <div
@@ -398,10 +351,8 @@ export function LandingPage() {
                   aria-pressed={activeTopic === index}
                   className={activeTopic === index ? 'active' : ''}
                 >
-                  <span>0{index + 1}</span>
                   <Icon />
                   <strong>{label}</strong>
-                  <ArrowRight />
                 </button>
               ))}
             </m.div>
@@ -410,7 +361,6 @@ export function LandingPage() {
               <div className="woofy-chat-topbar">
                 <div className="woofy-chat-avatar"><img src={`${import.meta.env.BASE_URL}woofy-logo-256.webp`} alt="" width={256} height={256} loading="lazy" /></div>
                 <span><strong>Doug</strong><small><i /> aprendendo seus interesses</small></span>
-                <span className="woofy-chat-id">WOOFY CHAT / 03</span>
               </div>
               <div className="woofy-chat-body">
                 <AnimatePresence mode="wait">
@@ -431,9 +381,8 @@ export function LandingPage() {
                     </div>
                   </m.div>
                 </AnimatePresence>
-                <div className="woofy-interest-reward"><BadgePlus /><span>NOVO INTERESSE DESCOBERTO</span><strong>+15 <PawPrint fill="currentColor" /></strong></div>
               </div>
-              <div className="woofy-chat-caption"><MessageCircle /> A IA sugere. Você sempre decide.</div>
+              <div className="woofy-chat-caption"><MessageCircle /> Doug sugere. Você sempre decide.</div>
             </m.div>
           </div>
         </section>
@@ -463,10 +412,8 @@ export function LandingPage() {
             </Link>
           </div>
           <div className="woofy-final-dog" aria-hidden="true">
-            <span>EI!</span>
             <img src={`${import.meta.env.BASE_URL}mascots/doug-hero.webp`} alt="" width={1100} height={1100} loading="lazy" draggable={false} />
           </div>
-          <span className="woofy-final-watermark">WOOFY</span>
         </section>
       </main>
 

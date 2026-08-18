@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, CheckCircle2, Eye, EyeOff, LockKeyhole, Mail, Pause, PawPrint, Play, UserRound } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle2, Eye, EyeOff, LockKeyhole, Mail, Pause, Play, UserRound } from 'lucide-react'
 import { m } from 'motion/react'
 import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -56,11 +56,6 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
         <span className="auth-kicker"><i /> ROTINA BOA TEM COMPANHIA</span>
         <h1>{isRegister ? 'Um passo de cada vez. Sempre juntos.' : 'Doug estava esperando por você.'}</h1>
         <p>{isRegister ? 'Crie seu espaço, adote seu companheiro e transforme pequenas metas em dias que dão orgulho.' : 'Continue sua rotina no seu ritmo — sem pressão, sem julgamento e com muita companhia.'}</p>
-        <div className="auth-story-tags" aria-label="Benefícios do Woofy">
-          <span><PawPrint aria-hidden="true" /> Companhia real</span>
-          <span>Gentil por design</span>
-          <span>Feito para o seu ritmo</span>
-        </div>
       </m.section>
 
       <m.section className="auth-form-panel" aria-label={isRegister ? 'Criar conta' : 'Entrar'} initial={{ opacity: 0, x: 22 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.48, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}>
@@ -83,7 +78,6 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
           <button className="google-button" type="button" disabled><GoogleMark /> Google <small>em breve</small></button>
           <p className="auth-switch">{isRegister ? 'Já tem uma conta?' : 'Ainda não tem uma conta?'} <Link to={isRegister ? '/entrar' : '/criar-conta'}>{isRegister ? 'Entrar' : 'Criar conta'}</Link></p>
           {isRegister && <p className="auth-terms">Ao continuar, você concorda com nossos <Link to="/termos">Termos de Uso</Link> e <Link to="/privacidade">Política de Privacidade</Link>.</p>}
-          <span className="auth-card-foot"><PawPrint aria-hidden="true" /> SEU RITMO. SEU COMPANHEIRO.</span>
         </div>
       </m.section>
 

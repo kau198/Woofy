@@ -15,7 +15,7 @@ export function HowItWorksPage() {
   return (
     <div className="public-page">
       <PublicHeader />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section className="inner-hero how-hero">
           <div>
             <span className="eyebrow"><PawPrint size={15} /> Como funciona</span>

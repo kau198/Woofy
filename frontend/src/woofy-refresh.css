@@ -2722,3 +2722,30 @@ select {
 @media (max-width: 520px) {
   .auth-form-wrap { box-shadow: 0 18px 44px rgba(3, 17, 11, 0.32); }
 }
+:root { --service-error: #8f281f; }
+.dark { --service-error: #ffb4a7; }
+.auth-error, .chat-error { color: var(--service-error); font-size: .85rem; line-height: 1.5; }
+.feedback-toast, .reminder-toast { position: fixed; z-index: 300; bottom: 30px; left: 50%; transform: translateX(-50%); width: min(480px, calc(100% - 32px)); padding: 16px 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); color: var(--ink); box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 18px; font-size: 14px; }
+.feedback-toast { border-left: 4px solid var(--service-error); }
+.reminder-toast { bottom: 105px; }
+.feedback-toast button, .reminder-toast button { background: none; border: 0; cursor: pointer; margin-left: auto; }
+.sidebar-bottom > button { display: flex; align-items: center; gap: 12px; border: 0; background: transparent; width: 100%; padding: 12px 16px; color: inherit; cursor: pointer; font: inherit; }
+.subtask-trigger { display: inline-flex; align-items: center; gap: 4px; background: none; border: 0; font-size: 11px; color: var(--muted); cursor: pointer; }
+.subtask-list { padding: 12px 24px 20px 55px; border-bottom: 1px solid var(--line); }
+.subtask-item, .subtask-list form { display: flex; align-items: center; gap: 12px; }
+.subtask-item label { display: flex; gap: 10px; flex: 1; }
+.subtask-list input:not([type=checkbox]), .suggested-task input, .delete-account input { border: 1px solid var(--line); background: var(--paper); color: var(--ink); padding: 10px; border-radius: 8px; min-width: 0; }
+.subtask-list form input, .suggested-task input { flex: 1; width: 100%; }
+.task-date-label { display: block; padding: 16px 24px 0; color: var(--muted); }
+.recovery-page { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 16px; gap: 28px; background: var(--cream); }
+.recovery-page form { display: grid; gap: 20px; }
+.recovery-page h1 { font-size: 26px; }
+.delete-account { margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--line); }
+.delete-account summary { cursor: pointer; color: var(--service-error); }
+.delete-account p { margin: 14px 0; }
+.google-identity-button { overflow: hidden; display: flex; justify-content: center; }
+.chat-message-bubble { white-space: pre-wrap; overflow-wrap: anywhere; }
+.chat-history-item strong { overflow: hidden; display: block; text-overflow: ellipsis; white-space: nowrap; max-width: 145px; }
+.chat-history-item:disabled, .item-status:disabled { cursor: default; }
+.item-status:not(:disabled) { cursor: pointer; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 8px; }
+@media (max-width: 760px) { .feedback-toast { bottom: 86px; } .reminder-toast { bottom: 156px; } .subtask-list { padding-left: 20px; } .task-modal { max-height: calc(100dvh - 40px); overflow-y: auto; } }

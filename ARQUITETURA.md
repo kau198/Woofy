@@ -1,80 +1,15 @@
-# Arquitetura proposta — Woofy
+# Arquitetura — Woofy
 
-## Visão geral
+O frontend React consome uma API FastAPI autenticada em `/api/v1`. O backend pode servir os arquivos compilados do frontend no mesmo domínio. Em desenvolvimento, Vite encaminha a API por proxy. Dados de conta não são persistidos no armazenamento do navegador.
 
-O projeto será um monorepositório simples com duas aplicações independentes:
+O SQLAlchemy representa usuários, pets, tarefas, subtarefas, hábitos, marcações diárias, sessões de foco, transações de patinhas, acessórios, sessões de autenticação, conversas e mensagens de contato. SQLite atende ao desenvolvimento e PostgreSQL à hospedagem; Alembic versiona o esquema.
 
-```text
-woofy/
-├── frontend/   # React, TypeScript, Vite e Tailwind CSS
-└── backend/    # FastAPI, SQLAlchemy, Alembic e MySQL (próxima etapa)
-```
+Cada consulta valida a propriedade do recurso no servidor. Mutações concorrentes da mesma conta usam bloqueio de linha no PostgreSQL e transação de escrita no SQLite. As recompensas fazem parte da mesma transação da ação e não podem ser repetidas por reabertura ou confirmação duplicada.
 
-O frontend nunca acessará o MySQL diretamente. Toda comunicação será feita por uma API REST autenticada. A integração com inteligência artificial ficará atrás do backend, que aplicará as regras de segurança, personalidade do pet e confirmação das ações sugeridas.
+Senhas usam Argon2id. A sessão JWT fica em cookie HttpOnly e está associada a um registro revogável. As mutações exigem cabeçalho próprio e origem autorizada. Produção exige segredo próprio, cookies seguros e origens HTTPS. Recuperação por SMTP usa token aleatório de uso único, armazenado por hash e com expiração; redefinir a senha revoga as sessões existentes.
 
-## Frontend
+O foco registra início, pausas e retomadas no servidor. O tempo do navegador só representa o relógio visual. O servidor confirma o tempo acumulado antes de conceder as patinhas.
 
-A interface é dividida em quatro superfícies:
+O chat envia ao provedor apenas o histórico recente, a mensagem atual e a rotina permitida pelo usuário. Respostas e sugestões são validadas com um contrato estruturado. As sugestões são exibidas, editadas e depois confirmadas em uma transação idempotente. O provedor não recebe acesso de escrita ao banco. O limite diário por conta também conta tentativas ao provedor.
 
-1. site institucional público;
-2. cadastro e login;
-3. fluxo obrigatório de adoção;
-4. aplicativo autenticado com navegação compartilhada.
-
-Os contratos TypeScript representam usuários, pets, tarefas, hábitos e transações. Durante esta etapa, um contexto React mantém os dados de demonstração. Na integração, os componentes consumirão o cliente HTTP centralizado, com tokens JWT, tratamento consistente de erros e invalidação dos dados após mutações.
-
-## Backend planejado
-
-O backend seguirá camadas explícitas:
-
-```text
-backend/app/
-├── core/          # configuração, segurança, limites e logs
-├── database/      # engine, sessão e base dos modelos
-├── models/        # entidades SQLAlchemy
-├── schemas/       # contratos Pydantic de entrada e saída
-├── repositories/  # consultas e persistência
-├── services/      # regras de negócio e transações
-├── routes/        # endpoints REST versionados
-├── dependencies/  # usuário atual, sessão e autorização
-└── integrations/  # provedor de IA
-```
-
-Rotas planejadas: `auth`, `users`, `pets`, `tasks`, `habits`, `focus-sessions`, `paws`, `accessories`, `conversations` e `progress`.
-
-## Modelo de dados
-
-O núcleo relacional segue o escopo informado:
-
-- `users` possui um `pet` e `user_preferences` e possui muitas tarefas, hábitos, sessões, transações e conversas;
-- `tasks` possui muitas `subtasks` e pode ser associada a sessões de foco;
-- `habits` possui muitos `habit_logs`, com índice único por hábito e data;
-- `accessories` se relaciona com usuários por `user_accessories`;
-- `conversations` possui muitas `messages`;
-- `paw_transactions` funciona como livro-razão: o saldo é a soma das transações, evitando divergência entre pontos concedidos e gastos.
-
-Todas as tabelas pertencentes ao usuário terão índices por `user_id` e datas de consulta. E-mails serão únicos. Exclusões de usuário serão transacionais e em cascata para dados pessoais; acessórios globais não serão removidos. A propriedade do recurso será validada em toda consulta, nunca apenas na interface.
-
-## Fluxo seguro da IA
-
-```text
-mensagem do usuário
-→ backend carrega pet, preferências e contexto permitido
-→ provedor gera resposta e sugestões estruturadas
-→ resposta e sugestões são armazenadas
-→ frontend mostra a prévia
-→ usuário confirma “Adicionar estas tarefas”
-→ backend valida novamente e cria os registros
-```
-
-A IA não receberá senha, token ou dados desnecessários e não fará mutações diretamente.
-
-## Ordem de implementação
-
-1. Frontend navegável e sistema visual — etapa atual.
-2. Backend base, MySQL, migrações, autenticação e usuários.
-3. Adoção persistida e proteção das rotas.
-4. CRUD de tarefas, subtarefas e filtros.
-5. Patinhas, modo foco e hábitos.
-6. Conversas, integração com IA e confirmação de sugestões.
-7. Acessórios, progresso, testes de integração e refinamento final.
+Configuração, execução, serviços externos e limitações de publicação estão no [README](README.md).

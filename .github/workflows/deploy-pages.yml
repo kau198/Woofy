@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
   build:
+    if: vars.WOOFY_API_URL != ''
     runs-on: ubuntu-latest
     steps:
       - name: Baixar o código
@@ -26,12 +27,12 @@ jobs:
       - name: Instalar pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 11.19.0
 
       - name: Configurar Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
           cache-dependency-path: frontend/pnpm-lock.yaml
 
@@ -50,6 +51,7 @@ jobs:
         working-directory: frontend
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_API_URL: ${{ vars.WOOFY_API_URL }}
         run: pnpm build
 
       - name: Preparar fallback das rotas

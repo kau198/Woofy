@@ -3,6 +3,7 @@ import { m } from 'motion/react'
 import { Link } from 'react-router-dom'
 import { Mascot } from '../components/Mascot'
 import { TaskRow } from '../components/TaskRow'
+import { runAction } from '../services/api'
 import { useWoofy } from '../contexts/WoofyContext'
 
 export function DashboardPage() {
@@ -60,7 +61,7 @@ export function DashboardPage() {
           <div className="habit-list">
             {habits.map((habit) => {
               const Icon = habit.icon === 'water' ? Droplets : habit.icon === 'book' ? Lightbulb : habit.icon === 'sleep' ? Clock3 : Coffee
-              return <m.button key={habit.id} className={`habit-row ${habit.completed ? 'is-completed' : ''}`} onClick={() => toggleHabit(habit.id)} aria-pressed={habit.completed} whileTap={{ scale: 0.985 }}><span className={`habit-icon habit-${habit.color}`}><Icon /></span><span><strong>{habit.name}</strong><small>{habit.time}</small></span><i>{habit.completed && <Check />}</i></m.button>
+              return <m.button key={habit.id} className={`habit-row ${habit.completed ? 'is-completed' : ''}`} onClick={() => runAction(toggleHabit(habit.id))} aria-pressed={habit.completed} whileTap={{ scale: 0.985 }}><span className={`habit-icon habit-${habit.color}`}><Icon /></span><span><strong>{habit.name}</strong><small>{habit.time}</small></span><i>{habit.completed && <Check />}</i></m.button>
             })}
           </div>
           <p className="habit-note"><Heart size={13} aria-hidden="true" /> Sem sequências para perder. Cada dia é um novo começo.</p>

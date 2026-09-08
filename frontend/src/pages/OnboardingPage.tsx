@@ -34,6 +34,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BrandMark } from '../components/BrandMark'
 import { Mascot } from '../components/Mascot'
+import { runAction } from '../services/api'
 import { useWoofy } from '../contexts/WoofyContext'
 import { coatOptions, objectives } from '../data/demo'
 import type { CoatType, Personality, PetGender } from '../types'
@@ -71,7 +72,7 @@ const interestOptions = [
 
 export function OnboardingPage() {
   const navigate = useNavigate()
-  const { userName, pet, setPet, interests, setInterests } = useWoofy()
+  const { userName, pet, savePet, interests, saveProfile, logout } = useWoofy()
   const [step, setStep] = useState(0)
   const [coat, setCoat] = useState<CoatType>(pet.coat)
   const [gender, setGender] = useState<PetGender>(pet.gender)
@@ -94,16 +95,16 @@ export function OnboardingPage() {
     setSelectedInterests((current) => [...current, cleanInterest])
     setCustomInterest('')
   }
-  const saveAndContinue = () => {
+  const saveAndContinue = async () => {
     if (step === totalSteps - 1) {
-      setPet({ ...pet, coat, gender, name: name.trim() || 'Doug', personality, objective, adoptionDate })
-      setInterests(selectedInterests)
+      await savePet({ coat, gender, name: name.trim() || 'Doug', personality, objective, adoptionDate, adopted: true })
+      await saveProfile({ interests: selectedInterests })
       navigate('/app')
       return
     }
     if (step === totalSteps - 2) {
-      setPet({ ...pet, coat, gender, name: name.trim() || 'Doug', personality, objective })
-      setInterests(selectedInterests)
+      await savePet({ coat, gender, name: name.trim() || 'Doug', personality, objective })
+      await saveProfile({ interests: selectedInterests })
     }
     setStep((current) => Math.min(totalSteps - 1, current + 1))
   }
@@ -116,7 +117,7 @@ export function OnboardingPage() {
           <span>Etapa {step + 1} de {totalSteps}</span>
           <div>{Array.from({ length: totalSteps }).map((_, index) => <i key={index} className={index <= step ? 'active' : ''} />)}</div>
         </div>
-        <button type="button" className="quiet-button" onClick={() => navigate('/')}>Sair</button>
+        <button type="button" className="quiet-button" onClick={() => void runAction(logout())}>Sair</button>
       </header>
 
       <section className="onboarding-content">
@@ -229,7 +230,7 @@ export function OnboardingPage() {
       <footer className="onboarding-footer">
         <button type="button" className="button button-ghost" disabled={step === 0} onClick={() => setStep((current) => Math.max(0, current - 1))}><ArrowLeft /> Voltar</button>
         <span className="onboarding-reassurance">Você poderá alterar essas escolhas depois.</span>
-        <button type="button" className="button button-primary" disabled={step === 1 && selectedInterests.length < 3} onClick={saveAndContinue}>{step === 0 ? 'Conhecer meu companheiro' : step === 1 && selectedInterests.length < 3 ? `Escolha mais ${3 - selectedInterests.length}` : step === totalSteps - 1 ? 'Começar nossa jornada' : 'Continuar'} <ArrowRight /></button>
+        <button type="button" className="button button-primary" disabled={step === 1 && selectedInterests.length < 3} onClick={() => runAction(saveAndContinue())}>{step === 0 ? 'Conhecer meu companheiro' : step === 1 && selectedInterests.length < 3 ? `Escolha mais ${3 - selectedInterests.length}` : step === totalSteps - 1 ? 'Começar nossa jornada' : 'Continuar'} <ArrowRight /></button>
       </footer>
     </main>
   )

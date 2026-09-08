@@ -131,7 +131,7 @@ docker compose up --build -d
 
 O aplicativo ficará em `http://localhost:8000`. O banco não expõe uma porta pública, e o contêiner aplica as migrações antes de iniciar o site.
 
-Caso o frontend seja mantido no GitHub Pages, configure `WOOFY_API_URL` com a URL HTTPS da API terminada em `/api/v1`. Sem essa variável, a publicação estática é ignorada para evitar colocar no ar uma interface desconectada.
+O GitHub Pages sempre recebe a versão visual mais recente. Para que cadastro, login e áreas internas também funcionem nele, configure `WOOFY_API_URL` com a URL HTTPS da API terminada em `/api/v1`. Sem essa variável, as páginas públicas continuam atualizadas, mas os recursos que dependem do servidor informam indisponibilidade.
 
 ## Qualidade e segurança
 

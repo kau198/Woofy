@@ -26,7 +26,7 @@ const topicOptions = [
   {
     label: 'Futebol',
     icon: Trophy,
-    prompt: 'Bora falar de futebol? Posso acompanhar seu time, discutir o jogo e lembrar dos próximos confrontos.',
+    prompt: 'Bora falar de futebol? Posso conversar sobre seu time, discutir táticas e guardar esse interesse para nossas próximas conversas.',
     color: 'lime',
   },
   {
@@ -50,7 +50,7 @@ const topicOptions = [
   {
     label: 'Atualidades',
     icon: Newspaper,
-    prompt: 'Podemos conversar sobre o que está acontecendo e separar o que importa do barulho.',
+    prompt: 'Se você trouxer o contexto, podemos conversar sobre o que aconteceu e separar o que importa do barulho.',
     color: 'cream',
   },
 ]
@@ -195,10 +195,10 @@ export function LandingPage() {
               <Link className="woofy-button woofy-button-large" to="/criar-conta">
                 Quero meu companheiro <PawPrint fill="currentColor" />
               </Link>
-              <Link className="woofy-play-link" to="/app">
+              <a className="woofy-play-link" href="#experiencia">
                 <span><Play fill="currentColor" /></span>
-                Jogar a demonstração
-              </Link>
+                Conhecer a experiência
+              </a>
             </m.div>
           </m.div>
 

@@ -4,19 +4,19 @@
  */
 
 :root {
-  --wf-ink: #172019;
-  --wf-paper: #f4efe4;
-  --wf-paper-strong: #fffdf8;
-  --wf-canvas: #e7dfd1;
-  --wf-forest: #153d2d;
-  --wf-forest-deep: #0c2b1f;
-  --wf-lime: #d7f36b;
-  --wf-yellow: #f4c84f;
-  --wf-coral: #ef7657;
-  --wf-coral-dark: #bc4d35;
-  --wf-blue: #96d8f5;
-  --wf-pink: #f5b8bd;
-  --wf-line: #172019;
+  --wf-ink: #1f2c27;
+  --wf-paper: #f5f1e9;
+  --wf-paper-strong: #fffdf9;
+  --wf-canvas: #e7e1d7;
+  --wf-forest: #23483c;
+  --wf-forest-deep: #142f27;
+  --wf-lime: #c9d8b8;
+  --wf-yellow: #d8b46d;
+  --wf-coral: #c9785b;
+  --wf-coral-dark: #934a35;
+  --wf-blue: #c4d8d4;
+  --wf-pink: #dec6bf;
+  --wf-line: #263a33;
   --wf-soft-line: rgba(23, 32, 25, 0.2);
   --wf-hard-shadow: 7px 7px 0 var(--wf-ink);
   --wf-small-shadow: 3px 3px 0 var(--wf-ink);
@@ -119,8 +119,8 @@ body h3 {
 
 .button:hover { box-shadow: 5px 5px 0 var(--wf-ink); }
 .button:active { box-shadow: 1px 1px 0 var(--wf-ink); }
-.button-primary { border-color: var(--wf-ink); background: var(--wf-coral); color: var(--wf-ink); }
-.button-primary:hover { background: #ff8968; }
+.button-primary { border-color: var(--wf-forest-deep); background: var(--wf-forest); color: var(--wf-paper-strong); }
+.button-primary:hover { background: var(--wf-forest-deep); }
 .button-soft { border-color: var(--wf-ink); background: var(--wf-blue); color: var(--wf-ink); }
 .button-dark { border-color: var(--wf-ink); background: var(--wf-forest); color: #fffdf8; }
 .button-light { border-color: var(--wf-ink); background: var(--wf-paper-strong); color: var(--wf-ink); }
@@ -155,7 +155,7 @@ body h3 {
   right: 0;
   left: 0;
   height: 4px;
-  background: var(--wf-coral);
+  background: var(--wf-forest);
   transform-origin: 0 50%;
 }
 
@@ -208,9 +208,9 @@ body h3 {
   min-height: 50px;
   border: 1.5px solid var(--wf-ink);
   border-radius: 8px;
-  background: var(--wf-coral);
+  background: var(--wf-forest);
   box-shadow: var(--wf-small-shadow);
-  color: var(--wf-ink);
+  color: var(--wf-paper-strong);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -221,13 +221,13 @@ body h3 {
   transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
-.woofy-button:hover { background: #ff8968; box-shadow: 5px 5px 0 var(--wf-ink); transform: translate(-2px, -2px); }
+.woofy-button:hover { background: var(--wf-forest-deep); box-shadow: 5px 5px 0 var(--wf-ink); transform: translate(-2px, -2px); }
 .woofy-button:active { box-shadow: 1px 1px 0 var(--wf-ink); transform: translate(2px, 2px); }
 .woofy-button svg { width: 18px; height: 18px; }
 .woofy-button-small { min-height: 43px; padding-inline: 17px; font-size: 11px; }
 .woofy-button-large { min-height: 60px; padding-inline: 27px; font-size: 14px; }
 .woofy-button-light { background: var(--wf-paper-strong); color: var(--wf-ink); }
-.woofy-button-light:hover { background: var(--wf-lime); }
+.woofy-button-light:hover { background: var(--wf-canvas); }
 
 .woofy-hero {
   position: relative;
@@ -1474,7 +1474,7 @@ select {
    text readable when the saved dark preference meets intentionally light
    editorial panels, and prevents public pages from inheriting app colors. */
 .button-primary,
-.button-primary:hover { color: var(--wf-ink) !important; }
+.button-primary:hover { color: var(--wf-paper-strong) !important; }
 
 .paws-balance,
 .paws-balance span { color: #493c21; }
@@ -1768,12 +1768,12 @@ select {
    references in GetLayers, while keeping Woofy's own warm companion identity. */
 
 .app-shell {
-  --app-bg: #f6f1e6;
-  --app-surface: #fffaf0;
-  --app-surface-strong: #ffffff;
-  --app-ink: #172019;
-  --app-muted: #535d55;
-  --app-faint: #6c756e;
+  --app-bg: #f4f1eb;
+  --app-surface: #faf8f3;
+  --app-surface-strong: #fffdf9;
+  --app-ink: #1f2c27;
+  --app-muted: #52605a;
+  --app-faint: #69766f;
   --app-line: rgba(23, 32, 25, 0.24);
   --app-line-strong: rgba(23, 32, 25, 0.46);
   --area-accent: var(--wf-yellow);
@@ -2182,12 +2182,12 @@ select {
 .app-command footer strong { margin-left: auto; color: var(--app-ink); font-size: 8px; letter-spacing: 0.1em; }
 
 .dark .app-shell {
-  --app-bg: #101713;
-  --app-surface: #17211b;
-  --app-surface-strong: #1d2921;
-  --app-ink: #fbf8ef;
-  --app-muted: #c8d0ca;
-  --app-faint: #aebbb2;
+  --app-bg: #111814;
+  --app-surface: #19231e;
+  --app-surface-strong: #202c25;
+  --app-ink: #f7f4ed;
+  --app-muted: #cad3cd;
+  --app-faint: #afbbb4;
   --app-line: rgba(251, 248, 239, 0.16);
   --app-line-strong: rgba(251, 248, 239, 0.3);
   background: var(--app-bg);
@@ -2473,8 +2473,8 @@ select {
 .auth-form .input-wrap:focus-within { border-color: var(--wf-forest); box-shadow: 3px 3px 0 var(--wf-coral); transform: translate(-1px, -1px); }
 .auth-form .input-wrap input { background: transparent !important; color: var(--wf-ink) !important; }
 .auth-form .input-wrap input::placeholder { color: #7e8982; opacity: 1; }
-.auth-form .button-primary { min-height: 48px; margin-top: 2px; border-color: var(--wf-forest-deep); background: var(--wf-coral); color: var(--wf-ink); box-shadow: 3px 3px 0 var(--wf-forest-deep); }
-.auth-form .button-primary:hover { background: var(--wf-lime); transform: translate(-1px, -1px); }
+.auth-form .button-primary { min-height: 48px; margin-top: 2px; border-color: var(--wf-forest-deep); background: var(--wf-forest); color: var(--wf-paper-strong); box-shadow: 3px 3px 0 var(--wf-forest-deep); }
+.auth-form .button-primary:hover { background: var(--wf-forest-deep); transform: translate(-1px, -1px); }
 .auth-form .checkbox-label { color: #47534b; }
 .auth-form .checkbox-label input { accent-color: var(--wf-forest); }
 .auth-form-panel .divider::before { background: #ccd1cd; }
@@ -2679,7 +2679,7 @@ select {
 .profile-avatar { border: 0; }
 .dashboard-welcome {
   border-width: 1px;
-  background: #efd47d;
+  background: linear-gradient(125deg, #d8dfcf 0%, #eee5d7 100%);
 }
 .dashboard-welcome h1,
 .dashboard-welcome h1 span,
@@ -2702,7 +2702,7 @@ select {
 .dark .sidebar-pet-card { border-color: rgba(255, 253, 248, 0.18); background: rgba(255, 255, 255, 0.055); }
 .dark .sidebar-pet-card > div > strong { color: var(--wf-paper-strong); }
 .dark .sidebar-pet-card > div > span { color: #b7c5bc; }
-.dark .habit-hero-card { background: #173a2d; color: var(--wf-paper-strong); }
+.dark .habit-hero-card { background: var(--wf-forest-deep); color: var(--wf-paper-strong); }
 .dark .habit-hero-card h2 { color: var(--wf-paper-strong); }
 .dark .habit-hero-card p { color: #d0dbd4; }
 .dark .habit-hero-card > div > span { color: var(--wf-lime); }

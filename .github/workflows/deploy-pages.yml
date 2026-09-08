@@ -37,7 +37,7 @@ jobs:
           cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Configurar GitHub Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Instalar dependências
         working-directory: frontend

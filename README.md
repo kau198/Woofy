@@ -1,22 +1,60 @@
-# Woofy
+<div align="center">
+  <img src="frontend/public/woofy-logo-256.webp" alt="Woofy" width="132" />
 
-Organização pessoal com tarefas, hábitos, foco e um companheiro virtual personalizável. O projeto inclui o site React e a API Python, com contas e dados persistidos.
+  # Woofy
 
-## O que está implementado
+  **Organizar a vida pode ser mais leve quando você não sente que está fazendo tudo sozinho.**
 
-- Cadastro, login por senha com hash Argon2id, sessão HttpOnly revogável e logout.
-- Login Google mediante configuração do cliente OAuth. Contas que já possuem senha não são vinculadas automaticamente por e-mail.
-- Adoção, personalização do pet, interesses, tema e preferências salvos por conta.
-- Criação, edição, exclusão, datas, prioridades e subtarefas.
-- Hábitos com marcação diária pelo horário de Brasília.
-- Foco com pausa, retomada e recuperação após recarregar a página. O servidor mede o tempo e concede a recompensa uma vez por sessão.
-- Livro de patinhas, desbloqueio e seleção de acessórios. Concluir e reabrir uma tarefa ou hábito não gera recompensas repetidas.
-- Conversas persistidas, modos de resposta, contexto opcional da rotina, anexos `.txt`/`.md` de até 12 KB e ditado quando suportado pelo navegador.
-- Sugestões estruturadas do companheiro, editáveis e criadas somente após confirmação. Repetir a confirmação não duplica tarefas.
-- Recuperação de senha por SMTP, exportação dos dados, exclusão da conta e formulário de contato persistido.
-- Migrações, testes de integração, verificação automática no GitHub e imagem Docker para o site completo.
+  Um companheiro de rotina que transforma tarefas, hábitos e momentos de foco em uma jornada acolhedora ao lado do Doug.
 
-## Rodar no Windows
+  [![Verificar projeto](https://github.com/kau198/Woofy/actions/workflows/checks.yml/badge.svg)](https://github.com/kau198/Woofy/actions/workflows/checks.yml)
+</div>
+
+---
+
+## Por que o Woofy existe
+
+Muitas ferramentas de produtividade tratam a rotina como uma corrida: mais metas, mais números, mais cobrança. Mas há dias em que uma tarefa pequena já exige coragem — e nesses dias uma interface fria pode pesar ainda mais.
+
+O Woofy nasceu de uma ideia simples e nobre: **a tecnologia deve ajudar as pessoas a cuidarem do próprio tempo sem transformar cada dia em uma prova de desempenho**.
+
+Doug, o companheiro virtual do projeto, não existe para julgar atrasos. Ele acompanha o usuário, celebra avanços reais e ajuda a transformar planos grandes em próximos passos possíveis. O objetivo não é produzir a qualquer custo; é construir constância, autonomia e uma relação mais gentil com a própria rotina.
+
+<div align="center">
+  <img src="frontend/public/mascots/doug-real-excited.webp" alt="Doug, o companheiro do Woofy" width="260" />
+</div>
+
+## Uma experiência com propósito
+
+- **Organização sem sobrecarga:** tarefas, prioridades, datas e subtarefas em um espaço claro.
+- **Hábitos que respeitam o ritmo:** acompanhamento diário sem recompensas duplicadas ou atalhos artificiais.
+- **Foco com presença:** sessões que podem ser pausadas e retomadas, mesmo após recarregar a página.
+- **Progresso que ganha significado:** conquistas rendem patinhas para personalizar o Doug.
+- **Conversas que viram ação:** o companheiro entende o contexto autorizado da rotina e sugere passos editáveis, sempre exigindo confirmação antes de criar algo.
+- **Um vínculo pessoal:** adoção, nome, personalidade, pelagem, interesses e acessórios persistem em cada conta.
+
+## O que já funciona
+
+| Área | Recursos |
+| --- | --- |
+| Conta | Cadastro, login seguro, sessão revogável, login Google, recuperação de senha, exportação e exclusão dos dados |
+| Rotina | Tarefas, subtarefas, prioridades, datas, horários, hábitos e lembretes dentro do aplicativo |
+| Foco | Temporizador persistente com pausa, retomada, cancelamento e recompensa validada pelo servidor |
+| Companhia | Conversas persistidas, modos de resposta, ditado, anexos de texto e sugestões estruturadas |
+| Gamificação | Livro de patinhas, recompensas protegidas contra repetição, acessórios e personalização do pet |
+| Plataforma | API Python, PostgreSQL, migrações, Docker, testes e verificações automáticas no GitHub |
+
+## Identidade e tecnologia
+
+O visual combina tons naturais, tipografia editorial, ilustrações próprias do Doug e movimento com propósito. As animações orientam a atenção e tornam a experiência viva sem transformar a interface em excesso de efeitos.
+
+- **Interface:** React 19, TypeScript, Vite, Motion, GSAP e Lucide.
+- **Servidor:** Python, FastAPI, SQLAlchemy e Alembic.
+- **Dados:** SQLite no desenvolvimento e PostgreSQL em produção.
+- **Segurança:** Argon2id, cookies HttpOnly, sessões revogáveis, proteção de origem e limites de uso.
+- **Operação:** Docker, GitHub Actions, Dependabot e proteção contra envio de segredos.
+
+## Começar no Windows
 
 Requisitos: Python 3.11 ou superior, Node.js 24 e pnpm 11.19.
 
@@ -28,54 +66,50 @@ python -m venv .venv
 Copy-Item backend/.env.example .env
 ```
 
-Edite `.env`. Gere sua `SECRET_KEY` com:
+Gere uma chave local e coloque o resultado em `SECRET_KEY` no arquivo `.env`:
 
 ```powershell
 .\.venv\Scripts\python.exe -c "import secrets; print(secrets.token_urlsafe(48))"
 ```
 
-Depois inicie o banco e a API:
+Prepare o banco e inicie o servidor:
 
 ```powershell
 .\.venv\Scripts\python.exe -m alembic -c backend/alembic.ini upgrade head
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
 ```
 
-Em outro terminal, também na raiz:
+Em outro terminal:
 
 ```powershell
 pnpm --dir frontend install --frozen-lockfile
 pnpm --dir frontend dev
 ```
 
-Abra `http://localhost:5173`. O Vite encaminha `/api` para a API na porta 8000. Use o mesmo hostname durante a sessão: não alterne entre `localhost` e `127.0.0.1`.
+Abra `http://localhost:5173`. Use sempre o mesmo hostname durante a sessão — não alterne entre `localhost` e `127.0.0.1`.
 
-O SQLite local fica em `data/woofy.db`. Contas novas começam sem tarefas de exemplo e com 50 patinhas de boas-vindas. Os antigos dados de demonstração do navegador não são importados automaticamente.
+O banco local fica em `data/woofy.db` e nunca é enviado ao Git. Contas novas começam com 50 patinhas e sem conteúdo de demonstração.
 
-Para testar o site compilado em uma única porta, rode `pnpm --dir frontend build` antes de iniciar a API e abra `http://localhost:8000`.
+## Serviços opcionais
 
-## Ativar os serviços externos
-
-As credenciais reais não fazem parte do repositório. Configure-as no `.env` local ou no gerenciador de segredos da hospedagem.
+Credenciais reais devem existir somente no `.env` local ou no gerenciador de segredos da hospedagem.
 
 | Variável | Finalidade |
 | --- | --- |
-| `OPENAI_API_KEY` | Ativa as respostas reais; precisa de uma chave de projeto com crédito e acesso ao modelo. |
-| `OPENAI_MODEL` | Modelo configurável; padrão `gpt-5.6-luna`. |
-| `CHAT_DAILY_LIMIT` | Limite por conta/dia; padrão 40 solicitações. Tentativas ao provedor também contam. |
-| `GOOGLE_CLIENT_ID` | Cliente OAuth Web autorizado para a origem do site. O botão aparece ao configurar esse valor no servidor. |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | Envio de links de recuperação com STARTTLS; porta padrão 587. |
-| `PUBLIC_URL` | Endereço público do frontend usado nos links de recuperação. |
+| `OPENAI_API_KEY` | Ativa as conversas reais do Doug |
+| `OPENAI_MODEL` | Define o modelo usado pelo serviço de conversa |
+| `CHAT_DAILY_LIMIT` | Limita solicitações por conta e por dia |
+| `GOOGLE_CLIENT_ID` | Ativa o botão de login Google para origens autorizadas |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | Enviam links de recuperação de senha com STARTTLS |
+| `PUBLIC_URL` | Define o endereço usado nos links de recuperação |
 
-O chat usa a [Responses API](https://developers.openai.com/api/docs/guides/text) com saída estruturada, histórico recente e `store=false`. Isso desativa o armazenamento da resposta para recuperação pela API; não representa garantia de retenção zero no provedor. O Woofy mantém o histórico no próprio banco. A disponibilidade do modelo depende da sua conta; consulte o [catálogo oficial](https://developers.openai.com/api/docs/models).
+As conversas usam a [Responses API](https://developers.openai.com/api/docs/guides/text), saída estruturada e `store=false`. O histórico necessário para o produto permanece no banco do próprio Woofy. Sem uma chave configurada, o aplicativo informa que o serviço está indisponível em vez de simular uma resposta.
 
-Sem chave, o chat informa indisponibilidade; não gera respostas falsas. Sem SMTP, a recuperação informa que o serviço ainda não está disponível. O ditado depende do navegador e da permissão de microfone. Notícias e placares ao vivo não possuem busca web nesta versão.
+## Publicação
 
-## Publicar o site completo
+O GitHub Pages hospeda apenas arquivos estáticos e não executa a API Python. Para publicar o Woofy completo, use uma hospedagem compatível com o `Dockerfile` e conecte um PostgreSQL persistente. Servir interface e API no mesmo domínio oferece a experiência mais confiável.
 
-O GitHub armazena o código. **GitHub Pages não executa Python nem hospeda o banco de dados.** Para o aplicativo completo, use uma hospedagem que execute o `Dockerfile` e um PostgreSQL persistente, de preferência com frontend e API no mesmo domínio.
-
-Variáveis de produção:
+Configuração mínima de produção:
 
 ```dotenv
 APP_ENV=production
@@ -85,23 +119,21 @@ FRONTEND_ORIGINS=https://seu-dominio.example
 PUBLIC_URL=https://seu-dominio.example
 COOKIE_SECURE=true
 COOKIE_SAMESITE=lax
-OPENAI_API_KEY=<chave-configurada-na-hospedagem>
-OPENAI_MODEL=gpt-5.6-luna
+OPENAI_API_KEY=<configurada-no-gerenciador-de-segredos>
 ```
 
-A senha na URL de conexão deve estar codificada para URL. Use HTTPS na frente do serviço. O contêiner executa as migrações antes de subir e serve a interface compilada junto da API. A porta padrão é 8000, ou `PORT` quando fornecida pela hospedagem. Configure backup e retenção do PostgreSQL no provedor escolhido.
-
-Para rodar o conjunto local com Docker e PostgreSQL, copie `backend/.env.example` para `.env`, preencha `POSTGRES_PASSWORD` com uma senha alfanumérica aleatória e rode:
+Para executar localmente com Docker e PostgreSQL:
 
 ```powershell
+Copy-Item backend/.env.example .env
 docker compose up --build -d
 ```
 
-O conjunto local abre em `http://localhost:8000`. O banco não expõe porta pública. Não remova o volume `postgres-data` se quiser preservar as contas. A imagem final utiliza um usuário sem privilégios de administrador.
+O aplicativo ficará em `http://localhost:8000`. O banco não expõe uma porta pública, e o contêiner aplica as migrações antes de iniciar o site.
 
-Se preferir manter o frontend no GitHub Pages, configure a variável de repositório `WOOFY_API_URL` com a URL HTTPS completa da API terminada em `/api/v1`. Configure a origem Pages em `FRONTEND_ORIGINS`, `COOKIE_SECURE=true` e `COOKIE_SAMESITE=none` quando os domínios forem diferentes. Navegadores que bloqueiam cookies de terceiros podem impedir esse arranjo; servir tudo no mesmo domínio evita essa dependência. Sem `WOOFY_API_URL`, o fluxo Pages é pulado para não publicar uma interface desconectada. O código e os testes continuam sendo enviados normalmente.
+Caso o frontend seja mantido no GitHub Pages, configure `WOOFY_API_URL` com a URL HTTPS da API terminada em `/api/v1`. Sem essa variável, a publicação estática é ignorada para evitar colocar no ar uma interface desconectada.
 
-## Verificação
+## Qualidade e segurança
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest backend -q
@@ -111,22 +143,26 @@ pnpm --dir frontend lint
 pnpm --dir frontend build
 ```
 
-O GitHub executa os testes com SQLite e um PostgreSQL isolado. Os testes do provedor usam respostas controladas e verificam o contrato real da integração; não consomem crédito. Eles não substituem um teste com sua chave após a configuração. O limite de login é por processo; use também limites no proxy de entrada quando operar múltiplas instâncias.
+As verificações executam o backend em SQLite e PostgreSQL, validam as migrações, compilam a interface e bloqueiam padrões comuns de credenciais em todo o histórico. Senhas usam Argon2id; sessões ficam em cookies HttpOnly e podem ser revogadas.
 
-Para mudanças de esquema, gere uma migração com `alembic -c backend/alembic.ini revision --autogenerate -m "Descricao"`, revise o arquivo e aplique `upgrade head`. Nunca aponte testes para um banco real. A suíte PostgreSQL exige um banco chamado `woofy_test`.
+Arquivos `.env`, bancos, chaves privadas, uploads, exportações e logs ficam fora do Git. Consulte a [política de segurança](SECURITY.md) antes de configurar um ambiente real. Nunca use um banco de produção nos testes.
 
-As mensagens do formulário ficam em `contact_messages` para consulta administrativa no banco; não há encaminhamento automático por e-mail. Os lembretes de tarefas, hábitos e pet aparecem com o app aberto e não são notificações push em segundo plano.
-
-## Estrutura
+## Estrutura do projeto
 
 ```text
-backend/app/          API, configuração, autenticação e regras do produto
-backend/migrations/  Histórico versionado do banco
-backend/tests/       Testes de conta, isolamento, foco, recompensas e chat
-frontend/src/        Interface React
-Dockerfile           Build e execução do site completo
+backend/app/          API, autenticação e regras do produto
+backend/migrations/  Evolução versionada do banco de dados
+backend/tests/       Testes de segurança, isolamento e funcionalidades
+frontend/src/        Interface React e experiência do usuário
+frontend/public/     Identidade visual, mascotes e vídeo
+Dockerfile           Build e execução do aplicativo completo
 compose.yaml         Ambiente local com PostgreSQL
-.github/workflows/   Verificações e publicação opcional do frontend
+.github/workflows/   Segurança, testes e publicação opcional
 ```
 
-Senhas, tokens, bancos locais e arquivos `.env` ficam fora do Git. A proteção das senhas segue a abordagem [FastAPI/pwdlib com Argon2](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/). O login Google valida assinatura, audiência, emissor e validade do ID token no servidor conforme a [documentação oficial](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token).
+---
+
+<div align="center">
+  <strong>Woofy é um lembrete de que progresso também pode ter afeto.</strong><br />
+  Pequenos passos continuam sendo passos.
+</div>

@@ -1,6 +1,11 @@
 import { lazy, Suspense, type ReactNode } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { AppShell } from './components/AppShell'
+import { useWoofy } from './contexts/WoofyContext'
+import { Feedback } from './components/Feedback'
+import { runAction } from './services/api'
+
+const RecoveryPage = lazy(() => import('./pages/RecoveryPage').then(({ RecoveryPage }) => ({ default: RecoveryPage })))
 
 const AccessoriesPage = lazy(() => import('./pages/AccessoriesPage').then(({ AccessoriesPage }) => ({ default: AccessoriesPage })))
 const AuthPage = lazy(() => import('./pages/AuthPage').then(({ AuthPage }) => ({ default: AuthPage })))
@@ -18,8 +23,17 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage').then(({ SettingsP
 const StaticPage = lazy(() => import('./pages/StaticPage').then(({ StaticPage }) => ({ default: StaticPage })))
 const TasksPage = lazy(() => import('./pages/TasksPage').then(({ TasksPage }) => ({ default: TasksPage })))
 
+function RequireSession({ children, adoption = false }: { children: ReactNode; adoption?: boolean }) {
+  const { authenticated, sessionReady, sessionError, refreshData, adopted } = useWoofy()
+  if (!sessionReady) return <RouteFallback />
+  if (sessionError) return <main className="route-loader"><p role="alert">{sessionError}</p><button className="button button-primary" onClick={() => runAction(refreshData())}>Tentar novamente</button></main>
+  if (!authenticated) return <Navigate to="/entrar" replace />
+  if (!adoption && !adopted) return <Navigate to="/adocao" replace />
+  return children
+}
+
 function AppArea({ children }: { children: ReactNode }) {
-  return <AppShell>{children}</AppShell>
+  return <RequireSession><AppShell>{children}</AppShell></RequireSession>
 }
 
 function RouteFallback() {
@@ -30,13 +44,15 @@ export default function App() {
   return (
     <>
       <a className="skip-link" href="#main-content">Pular para o conteúdo</a>
+      <Feedback />
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/como-funciona" element={<HowItWorksPage />} />
           <Route path="/entrar" element={<AuthPage mode="login" />} />
           <Route path="/criar-conta" element={<AuthPage mode="register" />} />
-          <Route path="/adocao" element={<OnboardingPage />} />
+          <Route path="/adocao" element={<RequireSession adoption><OnboardingPage /></RequireSession>} />
+          <Route path="/recuperar" element={<RecoveryPage />} />
           <Route path="/contato" element={<StaticPage type="contact" />} />
           <Route path="/termos" element={<StaticPage type="terms" />} />
           <Route path="/privacidade" element={<StaticPage type="privacy" />} />

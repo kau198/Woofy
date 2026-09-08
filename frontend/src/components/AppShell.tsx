@@ -21,6 +21,8 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useWoofy } from '../contexts/WoofyContext'
 import { BrandMark } from './BrandMark'
 import { Mascot } from './Mascot'
+import { runAction } from '../services/api'
+import { Reminders } from './Reminders'
 
 const navItems = [
   { to: '/app', label: 'Início', icon: Home, end: true, area: 'home', motto: 'Seu dia em movimento' },
@@ -37,7 +39,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [commandOpen, setCommandOpen] = useState(false)
   const [commandQuery, setCommandQuery] = useState('')
-  const { paws, pet, userName } = useWoofy()
+  const { paws, pet, userName, logout } = useWoofy()
   const location = useLocation()
   const navigate = useNavigate()
   const shouldReduceMotion = useReducedMotion()
@@ -80,6 +82,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="app-shell" data-area={activeArea.area}>
+      <Reminders />
       <aside className={`app-sidebar ${mobileOpen ? 'is-open' : ''}`}>
         <div className="sidebar-top">
           <BrandMark />
@@ -102,7 +105,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
         <div className="sidebar-bottom">
           <NavLink to="/app/configuracoes"><Settings size={20} /> Configurações</NavLink>
-          <NavLink to="/"><LogOut size={20} /> Sair</NavLink>
+          <button type="button" onClick={() => runAction(logout().then(() => navigate('/')))}><LogOut size={20} /> Sair</button>
         </div>
       </aside>
 

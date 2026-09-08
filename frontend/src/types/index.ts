@@ -11,6 +11,7 @@ export interface Pet {
   personality: Personality
   objective: string
   adoptionDate: string
+  accessory?: string
 }
 
 export interface Task {
@@ -20,6 +21,7 @@ export interface Task {
   category: TaskCategory
   priority: TaskPriority
   date: string
+  dueDate?: string
   time?: string
   completed: boolean
   subtasks?: Array<{ id: number; title: string; completed: boolean }>

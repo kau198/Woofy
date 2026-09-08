@@ -1,137 +1,164 @@
 /* oxlint-disable react/only-export-components */
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { initialHabits, initialTasks, initialTransactions } from '../data/demo'
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
+import { apiRequest, ApiError } from '../services/api'
 import type { Habit, PawTransaction, Pet, Task } from '../types'
 
-interface WoofyContextValue {
-  userName: string
-  setUserName: (name: string) => void
-  interests: string[]
-  setInterests: (interests: string[]) => void
-  pet: Pet
-  setPet: (pet: Pet) => void
-  tasks: Task[]
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>
-  toggleTask: (id: number) => void
-  habits: Habit[]
-  setHabits: React.Dispatch<React.SetStateAction<Habit[]>>
-  toggleHabit: (id: number) => void
-  paws: number
-  transactions: PawTransaction[]
-  addPaws: (amount: number, description: string) => void
-  darkMode: boolean
-  setDarkMode: (enabled: boolean) => void
+export interface ProfileValues {
+  name?: string
+  interests?: string[]
+  dark_mode?: boolean
+  notify_tasks?: boolean
+  notify_habits?: boolean
+  notify_companion?: boolean
 }
 
-const defaultPet: Pet = {
-  name: 'Doug',
-  gender: 'male',
-  coat: 'golden',
-  personality: 'carinhoso',
-  objective: 'Organizar meus estudos',
-  adoptionDate: '06 de agosto de 2026',
+interface Bootstrap {
+  profile: { name: string; email: string; interests: string[]; darkMode: boolean; adopted: boolean; pet: Pet; notifications: { tasks: boolean; habits: boolean; companion: boolean } }
+  tasks: Task[]
+  habits: Habit[]
+  paws: number
+  focusMinutes: number
+  transactions: PawTransaction[]
+}
+
+const empty: Bootstrap = {
+  profile: { name: '', email: '', interests: [], darkMode: false, adopted: false,
+    pet: { name: 'Doug', gender: 'male', coat: 'golden', personality: 'carinhoso', objective: 'Organizar minha rotina', adoptionDate: '' },
+    notifications: { tasks: true, habits: true, companion: true } },
+  tasks: [], habits: [], paws: 0, focusMinutes: 0, transactions: [],
+}
+
+interface WoofyContextValue {
+  authenticated: boolean
+  sessionReady: boolean
+  sessionError: string
+  adopted: boolean
+  userName: string
+  userEmail: string
+  interests: string[]
+  pet: Pet
+  tasks: Task[]
+  habits: Habit[]
+  paws: number
+  focusMinutes: number
+  transactions: PawTransaction[]
+  notifications: Bootstrap['profile']['notifications']
+  darkMode: boolean
+  login: (email: string, password: string) => Promise<void>
+  register: (name: string, email: string, password: string) => Promise<void>
+  loginWithGoogle: (credential: string) => Promise<void>
+  logout: () => Promise<void>
+  toggleTask: (id: number) => Promise<void>
+  toggleHabit: (id: number) => Promise<void>
+  addTask: (task: Omit<Task, 'id' | 'completed'>) => Promise<Task>
+  addHabit: (habit: Omit<Habit, 'id' | 'completed'>) => Promise<Habit>
+  saveProfile: (values: ProfileValues) => Promise<void>
+  savePet: (values: Partial<Pet> & { adopted?: boolean }) => Promise<void>
+  refreshData: () => Promise<void>
 }
 
 const WoofyContext = createContext<WoofyContextValue | null>(null)
 
-const STORAGE_KEY = 'woofy_frontend_state_v1'
-
-interface StoredWoofyState {
-  userName?: string
-  interests?: string[]
-  pet?: Pet
-  tasks?: Task[]
-  habits?: Habit[]
-  paws?: number
-  transactions?: PawTransaction[]
-  darkMode?: boolean
-}
-
-function loadStoredState(): StoredWoofyState {
-  try {
-    const stored = window.localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) as StoredWoofyState : {}
-  } catch {
-    return {}
-  }
-}
-
 export function WoofyProvider({ children }: { children: ReactNode }) {
-  const [storedState] = useState(loadStoredState)
-  const [userName, setUserName] = useState(storedState.userName ?? 'Kauã')
-  const [interests, setInterests] = useState<string[]>(storedState.interests ?? ['Futebol', 'Games', 'Tecnologia'])
-  const [pet, setPet] = useState(storedState.pet ?? defaultPet)
-  const [tasks, setTasks] = useState(storedState.tasks ?? initialTasks)
-  const [habits, setHabits] = useState(storedState.habits ?? initialHabits)
-  const [paws, setPaws] = useState(storedState.paws ?? 245)
-  const [transactions, setTransactions] = useState(storedState.transactions ?? initialTransactions)
-  const [darkMode, setDarkMode] = useState(storedState.darkMode ?? false)
+  const [data, setData] = useState<Bootstrap>(empty)
+  const [authenticated, setAuthenticated] = useState(false)
+  const [sessionReady, setSessionReady] = useState(false)
+  const [sessionError, setSessionError] = useState('')
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('woofy_theme') === 'dark')
+
+  const refreshData = useCallback(async () => {
+    const result = await apiRequest<Bootstrap>('/bootstrap', {}, true)
+    setData(result)
+    setDarkMode(result.profile.darkMode)
+    setAuthenticated(true)
+    setSessionError('')
+    setSessionReady(true)
+  }, [])
+
+  useEffect(() => {
+    // Remove obsolete demo data and legacy script-readable session tokens.
+    localStorage.removeItem('woofy_frontend_state_v1')
+    localStorage.removeItem('woofy_access_token')
+    void refreshData().catch((error: unknown) => {
+      if (!(error instanceof ApiError && error.status === 401)) setSessionError('Não foi possível conectar. Verifique sua conexão e tente novamente.')
+      setSessionReady(true)
+    })
+    const expired = () => { setData(empty); setAuthenticated(false) }
+    window.addEventListener('woofy-session-expired', expired)
+    return () => window.removeEventListener('woofy-session-expired', expired)
+  }, [refreshData])
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode)
+    localStorage.setItem('woofy_theme', darkMode ? 'dark' : 'light')
   }, [darkMode])
 
   useEffect(() => {
-    const snapshot: StoredWoofyState = { userName, interests, pet, tasks, habits, paws, transactions, darkMode }
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot))
-  }, [userName, interests, pet, tasks, habits, paws, transactions, darkMode])
+    if (!authenticated) return
+    const refresh = () => { if (document.visibilityState === 'visible') void refreshData().catch(() => {}) }
+    document.addEventListener('visibilitychange', refresh)
+    const timer = window.setInterval(refresh, 60000)
+    return () => { document.removeEventListener('visibilitychange', refresh); clearInterval(timer) }
+  }, [authenticated, refreshData])
 
-  const addPaws = useCallback((amount: number, description: string) => {
-    setPaws((current) => current + amount)
-    setTransactions((current) => [
-      { id: Date.now(), amount, description, date: 'Agora' },
-      ...current,
-    ])
+  const login = useCallback(async (email: string, password: string) => {
+    await apiRequest('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }, true)
+    await refreshData()
+  }, [refreshData])
+  const register = useCallback(async (name: string, email: string, password: string) => {
+    await apiRequest('/auth/register', { method: 'POST', body: JSON.stringify({ name, email, password }) }, true)
+    await refreshData()
+  }, [refreshData])
+  const loginWithGoogle = useCallback(async (credential: string) => {
+    await apiRequest('/auth/google', { method: 'POST', body: JSON.stringify({ credential }) }, true)
+    await refreshData()
+  }, [refreshData])
+  const logout = useCallback(async () => {
+    await apiRequest('/auth/logout', { method: 'POST' })
+    setData(empty)
+    setAuthenticated(false)
   }, [])
+  const toggleTask = async (id: number) => {
+    const task = data.tasks.find((item) => item.id === id)
+    if (!task) return
+    await apiRequest(`/tasks/${id}`, { method: 'PATCH', body: JSON.stringify({ completed: !task.completed }) })
+    await refreshData()
+  }
+  const toggleHabit = async (id: number) => {
+    const habit = data.habits.find((item) => item.id === id)
+    if (!habit) return
+    await apiRequest(`/habits/${id}/toggle`, { method: 'PATCH', body: JSON.stringify({ completed: !habit.completed }) })
+    await refreshData()
+  }
+  const addTask = async (task: Omit<Task, 'id' | 'completed'>) => {
+    const created = await apiRequest<Task>('/tasks', { method: 'POST', body: JSON.stringify(task) })
+    await refreshData()
+    return created
+  }
+  const addHabit = async (habit: Omit<Habit, 'id' | 'completed'>) => {
+    const created = await apiRequest<Habit>('/habits', { method: 'POST', body: JSON.stringify(habit) })
+    await refreshData()
+    return created
+  }
+  const saveProfile = async (values: ProfileValues) => {
+    await apiRequest('/profile', { method: 'PATCH', body: JSON.stringify(values) })
+    await refreshData()
+  }
+  const savePet = async (values: Partial<Pet> & { adopted?: boolean }) => {
+    const { adoptionDate: _date, accessory: _accessory, ...payload } = values
+    await apiRequest('/pet', { method: 'PATCH', body: JSON.stringify(payload) })
+    await refreshData()
+  }
 
-  const toggleTask = useCallback((id: number) => {
-    setTasks((current) =>
-      current.map((task) => {
-        if (task.id !== id) return task
-        if (!task.completed) addPaws(10, `Tarefa concluída: ${task.title}`)
-        return { ...task, completed: !task.completed }
-      }),
-    )
-  }, [addPaws])
-
-  const toggleHabit = useCallback((id: number) => {
-    setHabits((current) =>
-      current.map((habit) => {
-        if (habit.id !== id) return habit
-        if (!habit.completed) addPaws(5, `Hábito concluído: ${habit.name}`)
-        return { ...habit, completed: !habit.completed }
-      }),
-    )
-  }, [addPaws])
-
-  const value = useMemo(
-    () => ({
-      userName,
-      setUserName,
-      interests,
-      setInterests,
-      pet,
-      setPet,
-      tasks,
-      setTasks,
-      toggleTask,
-      habits,
-      setHabits,
-      toggleHabit,
-      paws,
-      transactions,
-      addPaws,
-      darkMode,
-      setDarkMode,
-    }),
-    [userName, interests, pet, tasks, toggleTask, habits, toggleHabit, paws, transactions, addPaws, darkMode],
-  )
-
-  return <WoofyContext.Provider value={value}>{children}</WoofyContext.Provider>
+  return <WoofyContext.Provider value={{ authenticated, sessionReady, sessionError, adopted: data.profile.adopted,
+    userName: data.profile.name, userEmail: data.profile.email, interests: data.profile.interests, pet: data.profile.pet,
+    tasks: data.tasks, habits: data.habits, paws: data.paws, focusMinutes: data.focusMinutes, transactions: data.transactions,
+    notifications: data.profile.notifications, darkMode, login, register, loginWithGoogle, logout, toggleTask,
+    toggleHabit, addTask, addHabit, saveProfile, savePet, refreshData }}>{children}</WoofyContext.Provider>
 }
 
 export function useWoofy() {
-  const context = useContext(WoofyContext)
-  if (!context) throw new Error('useWoofy deve ser usado dentro de WoofyProvider')
-  return context
+  const value = useContext(WoofyContext)
+  if (!value) throw new Error('useWoofy deve ser usado dentro de WoofyProvider')
+  return value
 }

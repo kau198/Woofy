@@ -4,9 +4,10 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from conftest import TestingSession
+from httpx import Request, Response
 from sqlalchemy import select
 
-from app.assistant import AssistantReply, generate_reply
+from app.assistant import AssistantReply, AssistantUnavailable, generate_reply
 from app.config import Settings
 from app.models import PasswordReset, User, utcnow
 
@@ -30,6 +31,23 @@ def test_provider_contract_hides_credentials_and_uses_structured_response(client
         assert user.email not in str(args)
         assert user.password_hash not in str(args)
         assert args["input"][0]["content"] == "Como estudar álgebra?"
+
+
+def test_provider_billing_error_is_actionable_without_leaking_credentials(client, auth):
+    from openai import RateLimitError
+
+    config = Settings(openai_api_key="test-only-key")
+    response = Response(429, request=Request("POST", "https://api.openai.com/v1/responses"))
+    error = RateLimitError("billing limit", response=response, body=None)
+    with (
+        TestingSession() as db,
+        patch("app.assistant.get_settings", return_value=config),
+        patch("app.assistant.OpenAI") as sdk,
+    ):
+        user = db.scalar(select(User))
+        sdk.return_value.responses.parse.side_effect = error
+        with __import__("pytest").raises(AssistantUnavailable, match="créditos"):
+            generate_reply(user, [], "Olá", "livre", "curto", "Contexto desativado.")
 
 
 def test_password_reset_is_one_use_and_revokes_old_session(client, auth):

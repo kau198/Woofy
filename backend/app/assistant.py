@@ -1,11 +1,21 @@
 import hashlib
+import logging
 from typing import Literal
 
-from openai import OpenAI
+from openai import (
+    APIConnectionError,
+    APITimeoutError,
+    AuthenticationError,
+    OpenAI,
+    PermissionDeniedError,
+    RateLimitError,
+)
 from pydantic import BaseModel, Field
 
 from .config import get_settings
 from .models import ChatMessage, User
+
+logger = logging.getLogger(__name__)
 
 MODE_GUIDANCE = {
     "livre": "Converse de forma natural. Não transforme tudo em produtividade.",
@@ -86,7 +96,20 @@ Nenhuma sugestão é salva automaticamente; o usuário pode editar e confirmar d
             store=False,
             text_format=AssistantReply,
         )
+    except AuthenticationError as exc:
+        logger.warning("OpenAI rejected the configured credential (%s).", type(exc).__name__)
+        raise AssistantUnavailable("A credencial do serviço de conversa é inválida.") from exc
+    except PermissionDeniedError as exc:
+        logger.warning("OpenAI denied model access (%s).", type(exc).__name__)
+        raise AssistantUnavailable("A conta do serviço não tem acesso ao modelo configurado.") from exc
+    except RateLimitError as exc:
+        logger.warning("OpenAI rate or billing limit reached (%s).", type(exc).__name__)
+        raise AssistantUnavailable("O limite de uso ou os créditos do serviço de conversa foram atingidos.") from exc
+    except (APIConnectionError, APITimeoutError) as exc:
+        logger.warning("OpenAI connection failed (%s).", type(exc).__name__)
+        raise AssistantUnavailable("O serviço de conversa demorou para responder. Tente novamente.") from exc
     except Exception as exc:
+        logger.exception("Unexpected assistant provider failure (%s).", type(exc).__name__)
         raise AssistantUnavailable("O companheiro está indisponível por alguns instantes.") from exc
 
     reply = response.output_parsed

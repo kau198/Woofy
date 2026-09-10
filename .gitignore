@@ -24,3 +24,4 @@ exports/
 data/
 backend/data/
 frontend/.env.local
+.tmp-edge-linkedin/

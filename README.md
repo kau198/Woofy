@@ -7,10 +7,21 @@
 
   Um companheiro de rotina que transforma tarefas, hábitos e momentos de foco em uma jornada acolhedora ao lado do Doug.
 
+  [🌐 Experimentar o Woofy](https://kau198.github.io/Woofy/) · [📖 Entender a arquitetura](ARQUITETURA.md) · [🔒 Conhecer a segurança](SECURITY.md)
+
   [![Verificar projeto](https://github.com/kau198/Woofy/actions/workflows/checks.yml/badge.svg)](https://github.com/kau198/Woofy/actions/workflows/checks.yml)
 </div>
 
 ---
+
+## ✨ Veja o Woofy em ação
+
+<div align="center">
+  <a href="https://kau198.github.io/Woofy/">
+    <img src="docs/media/woofy-home.png" alt="Página inicial do Woofy com Doug, o Golden Retriever virtual" width="100%" />
+  </a>
+  <sub>Clique na imagem para conhecer a experiência publicada.</sub>
+</div>
 
 ## Por que o Woofy existe
 
@@ -23,6 +34,12 @@ Doug, o companheiro virtual do projeto, não existe para julgar atrasos. Ele aco
 <div align="center">
   <img src="frontend/public/mascots/doug-real-excited.webp" alt="Doug, o companheiro do Woofy" width="260" />
 </div>
+
+## 🐕 Por que um Golden Retriever?
+
+O Golden Retriever representa exatamente a sensação que o Woofy quer levar para a rotina: presença, confiança, energia gentil e companhia sem julgamento. A raça é lembrada pela sociabilidade e pelo vínculo próximo com as pessoas — características que inspiraram o comportamento do Doug dentro do produto.
+
+Ele não é apenas um mascote decorativo. Doug reage ao progresso, acompanha sessões de foco, participa da personalização e transforma uma ferramenta funcional em uma experiência com afeto. A escolha do Golden também orienta toda a identidade visual: tons naturais, calor, movimento e uma comunicação mais humana.
 
 ## Uma experiência com propósito
 
@@ -44,7 +61,7 @@ Doug, o companheiro virtual do projeto, não existe para julgar atrasos. Ele aco
 | Gamificação | Livro de patinhas, recompensas protegidas contra repetição, acessórios e personalização do pet |
 | Plataforma | API Python, PostgreSQL, migrações, Docker, testes e verificações automáticas no GitHub |
 
-## Identidade e tecnologia
+## 🧰 Identidade e tecnologia
 
 O visual combina tons naturais, tipografia editorial, ilustrações próprias do Doug e movimento com propósito. As animações orientam a atenção e tornam a experiência viva sem transformar a interface em excesso de efeitos.
 

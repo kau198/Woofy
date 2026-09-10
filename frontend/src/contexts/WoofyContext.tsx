@@ -66,8 +66,7 @@ export function WoofyProvider({ children }: { children: ReactNode }) {
   const [sessionError, setSessionError] = useState('')
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('woofy_theme') === 'dark')
 
-  const refreshData = useCallback(async () => {
-    const result = await apiRequest<Bootstrap>('/bootstrap', {}, true)
+  const applyBootstrap = useCallback((result: Bootstrap) => {
     setData(result)
     setDarkMode(result.profile.darkMode)
     setAuthenticated(true)
@@ -75,18 +74,27 @@ export function WoofyProvider({ children }: { children: ReactNode }) {
     setSessionReady(true)
   }, [])
 
+  const refreshData = useCallback(async () => {
+    const result = await apiRequest<Bootstrap>('/bootstrap', {}, true)
+    applyBootstrap(result)
+  }, [applyBootstrap])
+
   useEffect(() => {
+    let active = true
     // Remove obsolete demo data and legacy script-readable session tokens.
     localStorage.removeItem('woofy_frontend_state_v1')
     localStorage.removeItem('woofy_access_token')
-    void refreshData().catch((error: unknown) => {
+    void apiRequest<Bootstrap>('/bootstrap', {}, true).then((result) => {
+      if (active) applyBootstrap(result)
+    }).catch((error: unknown) => {
+      if (!active) return
       if (!(error instanceof ApiError && error.status === 401)) setSessionError('Não foi possível conectar. Verifique sua conexão e tente novamente.')
       setSessionReady(true)
     })
     const expired = () => { setData(empty); setAuthenticated(false) }
     window.addEventListener('woofy-session-expired', expired)
-    return () => window.removeEventListener('woofy-session-expired', expired)
-  }, [refreshData])
+    return () => { active = false; window.removeEventListener('woofy-session-expired', expired) }
+  }, [applyBootstrap])
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode)

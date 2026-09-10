@@ -67,7 +67,6 @@ export function ChatPage() {
 
   useEffect(() => {
     let active = true
-    setMessages([])
     runAction(apiRequest<ChatMessage[]>(`/chat/messages?conversation=${conversation}`).then((history) => {
       if (active) setMessages(history.length ? history : [{ id: -1, sender: 'pet', text: `Oi, ${userName}! Sobre o que você quer conversar?` }])
     }))
@@ -134,7 +133,13 @@ export function ChatPage() {
   }
 
   const startNewConversation = () => {
-    setConversation(crypto.randomUUID()); setMode('livre'); setAttachment(''); setAttachmentText(''); setError('')
+    setMessages([]); setConversation(crypto.randomUUID()); setMode('livre'); setAttachment(''); setAttachmentText(''); setError('')
+  }
+
+  const selectConversation = (id: string) => {
+    if (id === conversation) return
+    setMessages([])
+    setConversation(id)
   }
 
   return (
@@ -142,7 +147,7 @@ export function ChatPage() {
       <aside className="chat-sidebar">
         <button className="button button-primary button-block" onClick={startNewConversation} disabled={typing}><Plus /> Nova conversa</button>
         <span className="chat-side-label">CONVERSA ATUAL</span>
-        {conversations.map((item) => <button key={item.id} disabled={typing} className={`chat-history-item ${conversation === item.id ? 'active' : ''}`} onClick={() => setConversation(item.id)}><span><MessageCircle /></span><div><strong>{item.title}</strong></div></button>)}
+        {conversations.map((item) => <button key={item.id} disabled={typing} className={`chat-history-item ${conversation === item.id ? 'active' : ''}`} onClick={() => selectConversation(item.id)}><span><MessageCircle /></span><div><strong>{item.title}</strong></div></button>)}
         <div className="chat-safe-note"><Brain /><p>Você controla o contexto. {pet.name} nunca cria ou altera nada sem pedir.</p></div>
       </aside>
 

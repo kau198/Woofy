@@ -81,6 +81,15 @@ def test_production_refuses_placeholder_credentials():
     settings.validate_production()
 
 
+def test_managed_postgres_urls_use_installed_driver():
+    assert Settings(database_url="postgres://user:pass@db/woofy").database_url.startswith(
+        "postgresql+psycopg://"
+    )
+    assert Settings(database_url="postgresql://user:pass@db/woofy").database_url.startswith(
+        "postgresql+psycopg://"
+    )
+
+
 def test_contact_and_missing_email_configuration(client):
     response = client.post(
         "/api/v1/contact",

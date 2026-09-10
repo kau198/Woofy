@@ -133,6 +133,19 @@ O aplicativo ficará em `http://localhost:8000`. O banco não expõe uma porta p
 
 O GitHub Pages sempre recebe a versão visual mais recente. Para que cadastro, login e áreas internas também funcionem nele, configure `WOOFY_API_URL` com a URL HTTPS da API terminada em `/api/v1`. Sem essa variável, as páginas públicas continuam atualizadas, mas os recursos que dependem do servidor informam indisponibilidade.
 
+### Chat publicado sem chave no navegador
+
+O GitHub Pages entrega apenas a interface. A conversa real passa pelo servidor Python: o navegador envia a mensagem ao Woofy, o servidor lê `OPENAI_API_KEY` do ambiente e somente ele chama a OpenAI. A chave não entra no JavaScript, no histórico do Git nem nas respostas da API.
+
+O arquivo `render.yaml` prepara um serviço web e um PostgreSQL no Render. Ao criar o Blueprint, informe `OPENAI_API_KEY` no campo secreto solicitado. Quando o serviço estiver ativo:
+
+1. Confirme que `https://woofy-kau198.onrender.com/health` retorna `{"status":"ok"}`.
+2. No GitHub, abra **Settings → Secrets and variables → Actions → Variables**.
+3. Crie `WOOFY_API_URL` com `https://woofy-kau198.onrender.com/api/v1`.
+4. Execute novamente a ação **Publicar no GitHub Pages**.
+
+O plano gratuito serve para demonstração, mas o servidor pode hibernar após inatividade e o PostgreSQL gratuito expira após 30 dias. Para conservar contas e conversas continuamente, use um banco persistente.
+
 ## Qualidade e segurança
 
 ```powershell

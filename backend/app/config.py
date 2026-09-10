@@ -43,6 +43,18 @@ class Settings(BaseSettings):
             return [origin.strip() for origin in value.split(",") if origin.strip()]
         return value
 
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def use_psycopg_v3(cls, value: object) -> object:
+        # Managed providers commonly expose a generic Postgres URL. This
+        # project ships psycopg 3, so make the SQLAlchemy driver explicit.
+        if isinstance(value, str):
+            if value.startswith("postgres://"):
+                return value.replace("postgres://", "postgresql+psycopg://", 1)
+            if value.startswith("postgresql://"):
+                return value.replace("postgresql://", "postgresql+psycopg://", 1)
+        return value
+
     @property
     def is_production(self) -> bool:
         return self.app_env.lower() == "production"

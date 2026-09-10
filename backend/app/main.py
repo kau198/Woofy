@@ -295,7 +295,7 @@ def health(db: Db) -> dict:
 @app.get("/api/v1/meta")
 def meta() -> dict:
     return {
-        "assistantConfigured": bool(settings.openai_api_key),
+        "assistantConfigured": bool(settings.groq_api_key or settings.openai_api_key),
         "googleClientId": settings.google_client_id,
         "passwordResetConfigured": bool(settings.smtp_host and settings.smtp_from),
     }

@@ -33,6 +33,30 @@ def test_provider_contract_hides_credentials_and_uses_structured_response(client
         assert args["input"][0]["content"] == "Como estudar álgebra?"
 
 
+def test_free_provider_is_preferred_and_uses_strict_structured_response(client, auth):
+    config = Settings(groq_api_key="test-only-free-key", openai_api_key="fallback-key")
+    content = AssistantReply(text="Vamos organizar seu dia.", suggestions=[]).model_dump_json()
+    with (
+        TestingSession() as db,
+        patch("app.assistant.get_settings", return_value=config),
+        patch("app.assistant.OpenAI") as sdk,
+    ):
+        user = db.scalar(select(User))
+        sdk.return_value.chat.completions.create.return_value = SimpleNamespace(
+            choices=[SimpleNamespace(message=SimpleNamespace(content=content))]
+        )
+        result = generate_reply(user, [], "Organize meu dia", "planejar", "curto", "Sem contexto.")
+        assert result.text == "Vamos organizar seu dia."
+        client_args = sdk.call_args.kwargs
+        assert client_args["base_url"] == "https://api.groq.com/openai/v1"
+        assert client_args["api_key"] == "test-only-free-key"
+        args = sdk.return_value.chat.completions.create.call_args.kwargs
+        assert args["model"] == "openai/gpt-oss-20b"
+        assert args["response_format"]["json_schema"]["strict"] is True
+        assert user.email not in str(args)
+        assert user.password_hash not in str(args)
+
+
 def test_provider_billing_error_is_actionable_without_leaking_credentials(client, auth):
     from openai import RateLimitError
 
@@ -46,7 +70,7 @@ def test_provider_billing_error_is_actionable_without_leaking_credentials(client
     ):
         user = db.scalar(select(User))
         sdk.return_value.responses.parse.side_effect = error
-        with __import__("pytest").raises(AssistantUnavailable, match="créditos"):
+        with __import__("pytest").raises(AssistantUnavailable, match="limite gratuito"):
             generate_reply(user, [], "Olá", "livre", "curto", "Contexto desativado.")
 
 

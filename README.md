@@ -96,14 +96,16 @@ Credenciais reais devem existir somente no `.env` local ou no gerenciador de seg
 
 | Variável | Finalidade |
 | --- | --- |
-| `OPENAI_API_KEY` | Ativa as conversas reais do Doug |
-| `OPENAI_MODEL` | Define o modelo usado pelo serviço de conversa |
+| `GROQ_API_KEY` | Ativa as conversas do Doug usando o plano gratuito preferencial |
+| `GROQ_MODEL` | Define o modelo usado no Groq (padrão: `openai/gpt-oss-20b`) |
+| `OPENAI_API_KEY` | Alternativa opcional caso o Groq não seja configurado |
+| `OPENAI_MODEL` | Define o modelo da alternativa OpenAI |
 | `CHAT_DAILY_LIMIT` | Limita solicitações por conta e por dia |
 | `GOOGLE_CLIENT_ID` | Ativa o botão de login Google para origens autorizadas |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | Enviam links de recuperação de senha com STARTTLS |
 | `PUBLIC_URL` | Define o endereço usado nos links de recuperação |
 
-As conversas usam a [Responses API](https://developers.openai.com/api/docs/guides/text), saída estruturada e `store=false`. O histórico necessário para o produto permanece no banco do próprio Woofy. Sem uma chave configurada, o aplicativo informa que o serviço está indisponível em vez de simular uma resposta.
+O Woofy prefere o Groq quando `GROQ_API_KEY` está configurada e usa respostas estruturadas para manter o formato da conversa e das sugestões. Segundo a [política de dados do Groq](https://console.groq.com/docs/your-data), entradas e saídas da API não são retidas por padrão, salvo situações limitadas de segurança e confiabilidade. A OpenAI continua disponível como alternativa e usa `store=false`. O histórico necessário para o produto permanece no banco do próprio Woofy. Sem nenhuma chave configurada, o aplicativo informa que o serviço está indisponível em vez de simular uma resposta.
 
 ## Publicação
 
@@ -119,7 +121,7 @@ FRONTEND_ORIGINS=https://seu-dominio.example
 PUBLIC_URL=https://seu-dominio.example
 COOKIE_SECURE=true
 COOKIE_SAMESITE=lax
-OPENAI_API_KEY=<configurada-no-gerenciador-de-segredos>
+GROQ_API_KEY=<configurada-no-gerenciador-de-segredos>
 ```
 
 Para executar localmente com Docker e PostgreSQL:
@@ -135,9 +137,9 @@ O GitHub Pages sempre recebe a versão visual mais recente. Para que cadastro, l
 
 ### Chat publicado sem chave no navegador
 
-O GitHub Pages entrega apenas a interface. A conversa real passa pelo servidor Python: o navegador envia a mensagem ao Woofy, o servidor lê `OPENAI_API_KEY` do ambiente e somente ele chama a OpenAI. A chave não entra no JavaScript, no histórico do Git nem nas respostas da API.
+O GitHub Pages entrega apenas a interface. A conversa real passa pelo servidor Python: o navegador envia a mensagem ao Woofy, o servidor lê `GROQ_API_KEY` do ambiente e somente ele chama o provedor. A chave não entra no JavaScript, no histórico do Git nem nas respostas da API.
 
-O arquivo `render.yaml` prepara um serviço web e um PostgreSQL no Render. Ao criar o Blueprint, informe `OPENAI_API_KEY` no campo secreto solicitado. Quando o serviço estiver ativo:
+O arquivo `render.yaml` prepara um serviço web e um PostgreSQL no Render. Crie uma chave gratuita no [Groq Console](https://console.groq.com/keys) e informe-a no Render como `GROQ_API_KEY`. Quando o serviço estiver ativo:
 
 1. Confirme que `https://woofy-kau198.onrender.com/health` retorna `{"status":"ok"}`.
 2. No GitHub, abra **Settings → Secrets and variables → Actions → Variables**.

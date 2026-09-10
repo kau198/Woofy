@@ -20,6 +20,8 @@ class Settings(BaseSettings):
         ]
     )
     access_token_expire_minutes: int = 60 * 24 * 7
+    groq_api_key: str = ""
+    groq_model: str = "openai/gpt-oss-20b"
     openai_api_key: str = ""
     openai_model: str = "gpt-5.6-luna"
     google_client_id: str = ""

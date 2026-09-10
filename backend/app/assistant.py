@@ -10,7 +10,7 @@ from openai import (
     PermissionDeniedError,
     RateLimitError,
 )
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from .config import get_settings
 from .models import ChatMessage, User
@@ -37,6 +37,8 @@ class AssistantUnavailable(RuntimeError):
 
 
 class SuggestedTask(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     title: str
     category: Literal["Pessoal", "Estudos", "Trabalho", "Saúde", "Casa", "Outros"]
     priority: Literal["Baixa", "Média", "Alta"]
@@ -44,6 +46,8 @@ class SuggestedTask(BaseModel):
 
 
 class AssistantReply(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     text: str
     suggestions: list[SuggestedTask] = Field(max_length=5)
 
@@ -57,7 +61,7 @@ def generate_reply(
     routine_context: str,
 ) -> AssistantReply:
     settings = get_settings()
-    if not settings.openai_api_key:
+    if not settings.groq_api_key and not settings.openai_api_key:
         raise AssistantUnavailable("O serviço de conversa ainda não foi ativado. Tente novamente mais tarde.")
 
     pet = user.pet
@@ -87,32 +91,55 @@ Nenhuma sugestão é salva automaticamente; o usuário pode editar e confirmar d
     safety_id = hashlib.sha256(f"woofy:{user.id}".encode()).hexdigest()[:32]
 
     try:
-        response = OpenAI(api_key=settings.openai_api_key, timeout=45, max_retries=1).responses.parse(
-            model=settings.openai_model,
-            instructions=instructions,
-            input=input_messages,
-            max_output_tokens=2000,
-            safety_identifier=safety_id,
-            store=False,
-            text_format=AssistantReply,
-        )
+        if settings.groq_api_key:
+            messages = [{"role": "system", "content": instructions}, *input_messages]
+            completion = OpenAI(
+                api_key=settings.groq_api_key,
+                base_url="https://api.groq.com/openai/v1",
+                timeout=45,
+                max_retries=1,
+            ).chat.completions.create(
+                model=settings.groq_model,
+                messages=messages,
+                max_completion_tokens=2000,
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "assistant_reply",
+                        "strict": True,
+                        "schema": AssistantReply.model_json_schema(),
+                    },
+                },
+            )
+            content = completion.choices[0].message.content
+            reply = AssistantReply.model_validate_json(content or "")
+        else:
+            response = OpenAI(api_key=settings.openai_api_key, timeout=45, max_retries=1).responses.parse(
+                model=settings.openai_model,
+                instructions=instructions,
+                input=input_messages,
+                max_output_tokens=2000,
+                safety_identifier=safety_id,
+                store=False,
+                text_format=AssistantReply,
+            )
+            reply = response.output_parsed
     except AuthenticationError as exc:
-        logger.warning("OpenAI rejected the configured credential (%s).", type(exc).__name__)
+        logger.warning("Conversation provider rejected the configured credential (%s).", type(exc).__name__)
         raise AssistantUnavailable("A credencial do serviço de conversa é inválida.") from exc
     except PermissionDeniedError as exc:
-        logger.warning("OpenAI denied model access (%s).", type(exc).__name__)
+        logger.warning("Conversation provider denied model access (%s).", type(exc).__name__)
         raise AssistantUnavailable("A conta do serviço não tem acesso ao modelo configurado.") from exc
     except RateLimitError as exc:
-        logger.warning("OpenAI rate or billing limit reached (%s).", type(exc).__name__)
-        raise AssistantUnavailable("O limite de uso ou os créditos do serviço de conversa foram atingidos.") from exc
+        logger.warning("Conversation provider rate limit reached (%s).", type(exc).__name__)
+        raise AssistantUnavailable("O limite gratuito do serviço de conversa foi atingido. Tente novamente mais tarde.") from exc
     except (APIConnectionError, APITimeoutError) as exc:
-        logger.warning("OpenAI connection failed (%s).", type(exc).__name__)
+        logger.warning("Conversation provider connection failed (%s).", type(exc).__name__)
         raise AssistantUnavailable("O serviço de conversa demorou para responder. Tente novamente.") from exc
     except Exception as exc:
         logger.exception("Unexpected assistant provider failure (%s).", type(exc).__name__)
         raise AssistantUnavailable("O companheiro está indisponível por alguns instantes.") from exc
 
-    reply = response.output_parsed
     if not reply or not reply.text.strip():
         raise AssistantUnavailable("Não foi possível gerar uma resposta agora.")
     return reply
